@@ -39,49 +39,6 @@ class MapException extends Exception
     }
 
     /**
-     * Gets the "INVALID BOUND" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\MapException The "INVALID BOUND" exception.
-     */
-    public static function invalidBound()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The bound setter arguments is invalid.',
-            'The available prototypes are :',
-            ' - function setBound(Ivory\GoogleMap\Base\Bound $bound)',
-            ' - function setBount('.
-            'Ivory\GoogleMap\Base\Coordinate $southWest, '.
-            'Ivory\GoogleMap\Base\Coordinate $northEast'.
-            ')',
-            ' - function setBound('.
-            'double $southWestLatitude, '.
-            'double $southWestLongitude, '.
-            'double $northEastLatitude, '.
-            'double $northEastLongitude, '.
-            'boolean southWestNoWrap = true, '.
-            'boolean $northEastNoWrap = true'.
-            ')'
-        ));
-    }
-
-    /**
-     * Gets the "INVALID CENTER" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\MapException The "INVALID CENTER" exception.
-     */
-    public static function invalidCenter()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The center setter arguments is invalid.',
-            'The available prototypes are :',
-            ' - function setCenter(Ivory\GoogleMap\Base\Coordinate $center)',
-            ' - function setCenter(double $latitude, double $longitude, boolean $noWrap = true)'
-        ));
-    }
-
-    /**
      * Gets the "INVALID HTML CONTAINER ID" exception.
      *
      * @return \Ivory\GoogleMap\Exception\MapException The "INVALID HTML CONTAINER ID" exception.

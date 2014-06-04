@@ -191,28 +191,11 @@ class Map extends AbstractJavascriptVariableAsset
     /**
      * Sets the map center.
      *
-     * Available prototypes:
-     *  - function setCenter(Ivory\GoogleMap\Base\Coordinate $center)
-     *  - function setCenter(double $latitude, double $longitude, boolean $noWrap = true)
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the center is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Base\Coordinate $center The map center.
      */
-    public function setCenter()
+    public function setCenter(Coordinate $center)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->center = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            $this->center->setLatitude($args[0]);
-            $this->center->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $this->center->setNoWrap($args[2]);
-            }
-        } else {
-            throw MapException::invalidCenter();
-        }
+        $this->center = $center;
     }
 
     /**
@@ -228,52 +211,11 @@ class Map extends AbstractJavascriptVariableAsset
     /**
      * Sets the map bound.
      *
-     * Available prototypes:
-     *  - function setBound(Ivory\GoogleMap\Base\Bound $bound = null)
-     *  - function setBount(Ivory\GoogleMap\Base\Coordinate $southWest, Ivory\GoogleMap\Base\Coordinate $northEast)
-     *  - function setBound(
-     *      double $southWestLatitude,
-     *      double $southWestLongitude,
-     *      double $northEastLatitude,
-     *      double $northEastLongitude,
-     *      boolean southWestNoWrap = true,
-     *      boolean $northEastNoWrap = true
-     *  )
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the bound is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Base\Bound|null $bound The bound.
      */
-    public function setBound()
+    public function setBound(Bound $bound = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Bound)) {
-            $this->bound = $args[0];
-        } elseif ((isset($args[0]) && ($args[0] instanceof Coordinate))
-            && (isset($args[1]) && ($args[1] instanceof Coordinate))
-        ) {
-            $this->bound->setSouthWest($args[0]);
-            $this->bound->setNorthEast($args[1]);
-        } elseif ((isset($args[0]) && is_numeric($args[0]))
-            && (isset($args[1]) && is_numeric($args[1]))
-            && (isset($args[2]) && is_numeric($args[2]))
-            && (isset($args[3]) && is_numeric($args[3]))
-        ) {
-            $this->bound->setSouthWest(new Coordinate($args[0], $args[1]));
-            $this->bound->setNorthEast(new Coordinate($args[2], $args[3]));
-
-            if (isset($args[4]) && is_bool($args[4])) {
-                $this->bound->getSouthWest()->setNoWrap($args[4]);
-            }
-
-            if (isset($args[5]) && is_bool($args[5])) {
-                $this->bound->getNorthEast()->setNoWrap($args[5]);
-            }
-        } elseif (!isset($args[0])) {
-            $this->bound->setSouthWest(null);
-            $this->bound->setNorthEast(null);
-        } else {
-            throw MapException::invalidBound();
-        }
+        $this->bound = $bound;
     }
 
     /**

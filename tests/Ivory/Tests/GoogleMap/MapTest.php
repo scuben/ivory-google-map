@@ -116,7 +116,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->map->setAutoZoom('foo');
     }
 
-    public function testCenterWithCoordinate()
+    public function testCenter()
     {
         $coordinate = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
         $this->map->setCenter($coordinate);
@@ -124,86 +124,12 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($coordinate, $this->map->getCenter());
     }
 
-    public function testCenterWithLatitueAndLongitude()
-    {
-        $this->map->setCenter(1, 2, false);
-
-        $this->assertEquals(1, $this->map->getCenter()->getLatitude());
-        $this->assertEquals(2, $this->map->getCenter()->getLongitude());
-        $this->assertFalse($this->map->getCenter()->isNoWrap());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\MapException
-     * @expectedExceptionMessage The center setter arguments is invalid.
-     * The available prototypes are :
-     * - function setCenter(Ivory\GoogleMap\Base\Coordinate $center)
-     * - function setCenter(double $latitude, double $longitude, boolean $noWrap = true)
-     */
-    public function testCenterWithInvalidValue()
-    {
-        $this->map->setCenter('foo');
-    }
-
-    public function testBoundWithBound()
+    public function testBound()
     {
         $bound = $this->getMock('Ivory\GoogleMap\Base\Bound');
         $this->map->setBound($bound);
 
         $this->assertSame($bound, $this->map->getBound());
-    }
-
-    public function testBoundWithCoordinates()
-    {
-        $southWestCoordinate = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-        $northEastCoordinate = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-
-        $this->map->setBound($southWestCoordinate, $northEastCoordinate);
-
-        $this->assertSame($southWestCoordinate, $this->map->getBound()->getSouthWest());
-        $this->assertSame($northEastCoordinate, $this->map->getBound()->getNorthEast());
-    }
-
-    public function testBoundWithLatitudesAndLongitudes()
-    {
-        $this->map->setBound(1, 2, 3, 4, true, false);
-
-        $this->assertSame(1, $this->map->getBound()->getSouthWest()->getLatitude());
-        $this->assertSame(2, $this->map->getBound()->getSouthWest()->getLongitude());
-        $this->assertTrue($this->map->getBound()->getSouthWest()->isNoWrap());
-
-        $this->assertEquals(3, $this->map->getBound()->getNorthEast()->getLatitude());
-        $this->assertEquals(4, $this->map->getBound()->getNorthEast()->getLongitude());
-        $this->assertFalse($this->map->getBound()->getNorthEast()->isNoWrap());
-    }
-
-    public function testBoundWithNullValue()
-    {
-        $this->map->setBound(1, 2, 3, 4);
-        $this->map->setBound(null);
-
-        $this->assertNull($this->map->getBound()->getSouthWest());
-        $this->assertNull($this->map->getBound()->getNorthEast());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\MapException
-     * @expectedExceptionMessage The bound setter arguments is invalid.
-     * The available prototypes are :
-     * - function setBound(Ivory\GoogleMap\Base\Bound $bound)
-     * - function setBount(Ivory\GoogleMap\Base\Coordinate $southWest, Ivory\GoogleMap\Base\Coordinate $northEast)
-     * - function setBound(
-     *     double $southWestLatitude,
-     *     double $southWestLongitude,
-     *     double $northEastLatitude,
-     *     double $northEastLongitude,
-     *     boolean southWestNoWrap = true,
-     *     boolean $northEastNoWrap = true
-     * )
-     */
-    public function testBoundWithInvalidValue()
-    {
-        $this->map->setBound('foo');
     }
 
     public function testHasMapOptionWithValidValue()
