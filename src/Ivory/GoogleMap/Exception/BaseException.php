@@ -19,38 +19,6 @@ namespace Ivory\GoogleMap\Exception;
 class BaseException extends Exception
 {
     /**
-     * Gets the "INVALID BOUND NORTH EAST" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\BaseException The "INVALID BOUND NORTH EAST" exception.
-     */
-    public static function invalidBoundNorthEast()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The north east setter arguments is invalid.',
-            'The available prototypes are :',
-            ' - function setNorthEast(Ivory\GoogleMap\Base\Coordinate $northEast)',
-            ' - function setNorthEast(double $latitude, double $longitude, boolean $noWrap = true)'
-        ));
-    }
-
-    /**
-     * Gets the "INVALID BOUND SOUTH WEST" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\BaseException The "INVALID BOUND SOUTH WEST" exception.
-     */
-    public static function invalidBoundSouthWest()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The south west setter arguments is invalid.',
-            'The available prototypes are :',
-            ' - function setSouthWest(Ivory\GoogleMap\Base\Coordinate $southWest)',
-            ' - function setSouthWest(double $latitude, double $longitude, boolean $noWrap = true)'
-        ));
-    }
-
-    /**
      * Gets the "INVALID COORDINATE LATITUDE" exception.
      *
      * @return \Ivory\GoogleMap\Exception\BaseException The "INVALID COORDINATE LATITUDE" exception.

@@ -12,6 +12,7 @@
 namespace Ivory\Tests\GoogleMap\Base;
 
 use Ivory\GoogleMap\Base\Bound;
+use Ivory\GoogleMap\Base\Coordinate;
 
 /**
  * Bound test.
@@ -62,7 +63,7 @@ class BoundTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($extends, $this->bound->getExtends());
     }
 
-    public function testSouthWestWithCoordinate()
+    public function testSouthWest()
     {
         $southWest = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
         $this->bound->setSouthWest($southWest);
@@ -70,37 +71,15 @@ class BoundTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($southWest, $this->bound->getSouthWest());
     }
 
-    public function testSouthWestWithLatitudeAndLongitude()
-    {
-        $this->bound->setSouthWest(1, 2, false);
-
-        $this->assertSame(1, $this->bound->getSouthWest()->getLatitude());
-        $this->assertSame(2, $this->bound->getSouthWest()->getLongitude());
-        $this->assertFalse($this->bound->getSouthWest()->isNoWrap());
-    }
-
     public function testSouthWestWithNull()
     {
-        $this->bound->setSouthWest(1, 2, false);
+        $this->bound->setSouthWest($this->getMock('Ivory\GoogleMap\Base\Coordinate'));
         $this->bound->setSouthWest(null);
 
         $this->assertNull($this->bound->getSouthWest());
     }
 
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\BaseException
-     * @expectedExceptionMessage
-     * The south west setter arguments is invalid.
-     * The available prototypes are :
-     *  - function setSouthWest(Ivory\GoogleMap\Base\Coordinate $southWest)
-     *  - function setSouthWest(double $latitude, double $longitude, boolean $noWrap = true)
-     */
-    public function testSouthWestWithInvalidValue()
-    {
-        $this->bound->setSouthWest('foo');
-    }
-
-    public function testNorthEastWithCoordinate()
+    public function testNorthEast()
     {
         $northEast = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
         $this->bound->setNorthEast($northEast);
@@ -108,40 +87,18 @@ class BoundTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($northEast, $this->bound->getNorthEast());
     }
 
-    public function testNorthEastWithLatitudeAndLongitude()
-    {
-        $this->bound->setNorthEast(1, 2, false);
-
-        $this->assertSame(1, $this->bound->getNorthEast()->getLatitude());
-        $this->assertSame(2, $this->bound->getNorthEast()->getLongitude());
-        $this->assertFalse($this->bound->getNorthEast()->isNoWrap());
-    }
-
     public function testNorthEastWithNull()
     {
-        $this->bound->setNorthEast(1, 2, false);
+        $this->bound->setNorthEast();
         $this->bound->setNorthEast(null);
 
         $this->assertNull($this->bound->getNorthEast());
     }
 
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\BaseException
-     * @expectedExceptionMessage
-     * The north east setter arguments is invalid.
-     * The available prototypes are :
-     *  - function setNorthEast(Ivory\GoogleMap\Base\Coordinate $northEast)
-     *  - function setNorthEast(double $latitude, double $longitude, boolean $noWrap = true)
-     */
-    public function testNorthEastWithInvalidValue()
-    {
-        $this->bound->setNorthEast('foo');
-    }
-
     public function testCenter()
     {
-        $this->bound->setSouthWest(-1, 0, false);
-        $this->bound->setNorthEast(1, 2, false);
+        $this->bound->setSouthWest(new Coordinate(-1, 0, false));
+        $this->bound->setNorthEast(new Coordinate(1, 2, false));
 
         $center = $this->bound->getCenter();
 

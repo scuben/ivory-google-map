@@ -71,34 +71,11 @@ class Bound extends AbstractJavascriptVariableAsset
     /**
      * Sets the south west coordinate.
      *
-     * Available prototypes:
-     *  - function setSouthWest(Ivory\GoogleMap\Base\Coordinate $southWest = null)
-     *  - function setSouthWest(double $latitude, double $longitude, boolean $noWrap = true)
-     *
-     * @throws \Ivory\GoogleMap\Exception\BaseException If the south west coordinate is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Base\Coordinate|null $southWest The south west coordinate.
      */
-    public function setSouthWest()
+    public function setSouthWest(Coordinate $southWest = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->southWest = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            if ($this->southWest === null) {
-                $this->southWest = new Coordinate();
-            }
-
-            $this->southWest->setLatitude($args[0]);
-            $this->southWest->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $this->southWest->setNoWrap($args[2]);
-            }
-        } elseif (!isset($args[0])) {
-            $this->southWest = null;
-        } else {
-            throw BaseException::invalidBoundSouthWest();
-        }
+        $this->southWest = $southWest;
     }
 
     /**
@@ -114,34 +91,11 @@ class Bound extends AbstractJavascriptVariableAsset
     /**
      * Sets the north east coordinate.
      *
-     * Available prototypes:
-     *  - function setNorthEast(Ivory\GoogleMap\Base\Coordinate $northEast = null)
-     *  - function setNorthEast(double $latitude, double $longitude, boolean $noWrap = true)
-     *
-     * @throws \Ivory\GoogleMap\Exception\BaseException If the north east coordinate is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Base\Coordinate|null $northEast The north east coordinate.
      */
-    public function setNorthEast()
+    public function setNorthEast(Coordinate $northEast = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->northEast = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            if ($this->northEast === null) {
-                $this->northEast = new Coordinate();
-            }
-
-            $this->northEast->setLatitude($args[0]);
-            $this->northEast->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $this->northEast->setNoWrap($args[2]);
-            }
-        } elseif (!isset($args[0])) {
-            $this->northEast = null;
-        } else {
-            throw BaseException::invalidBoundNorthEast();
-        }
+        $this->northEast = $northEast;
     }
 
     /**
