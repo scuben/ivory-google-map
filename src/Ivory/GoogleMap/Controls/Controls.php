@@ -71,34 +71,11 @@ class Controls
     /**
      * Sets the map type control.
      *
-     * Available prototypes:
-     *  - function setMapTypeControl(Ivory\GoogleMap\Controls\MapTypeControl $mapTypeControl = null)
-     *  - function setMaptypeControl(array $mapTypeIds, string $controlPosition, string $mapTypeControlStyle)
-     *
-     * @throws \Ivory\GoogleMap\Exception\ControlException If the map type control is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Controls\MapTypeControl|null $mapTypeControl The map type control.
      */
-    public function setMapTypeControl()
+    public function setMapTypeControl(MapTypeControl $mapTypeControl = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof MapTypeControl)) {
-            $this->mapTypeControl = $args[0];
-        } elseif ((isset($args[0]) && is_array($args[0]))
-            && (isset($args[1]) && is_string($args[1]))
-            && (isset($args[2]) && is_string($args[2]))
-        ) {
-            if ($this->mapTypeControl === null) {
-                $this->mapTypeControl = new MapTypeControl();
-            }
-
-            $this->mapTypeControl->setMapTypeIds($args[0]);
-            $this->mapTypeControl->setControlPosition($args[1]);
-            $this->mapTypeControl->setMapTypeControlStyle($args[2]);
-        } elseif (!isset($args[0])) {
-            $this->mapTypeControl = null;
-        } else {
-            throw ControlException::invalidMapTypeControl();
-        }
+        $this->mapTypeControl = $mapTypeControl;
     }
 
     /**
@@ -124,29 +101,11 @@ class Controls
     /**
      * Sets the overview map control.
      *
-     * Available prototypes:
-     *  - function setOverviewMapControl(Ivory\GoogleMap\Controls\OverviewMapControl $overviewMapControl = null)
-     *  - function setOverviewMapControl(boolean $opened)
-     *
-     * @throws \Ivory\GoogleMap\Exception\ControlException If the overview map control is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Controls\OverviewMapControl|null $overviewMapControl The overview map control.
      */
-    public function setOverviewMapControl()
+    public function setOverviewMapControl(OverviewMapControl $overviewMapControl = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0]) instanceof OverviewMapControl) {
-            $this->overviewMapControl = $args[0];
-        } elseif (isset($args[0]) && is_bool($args[0])) {
-            if ($this->overviewMapControl === null) {
-                $this->overviewMapControl = new OverviewMapControl();
-            }
-
-            $this->overviewMapControl->setOpened($args[0]);
-        } elseif (!isset($args[0])) {
-            $this->overviewMapControl = null;
-        } else {
-            throw ControlException::invalidOverviewMapControl();
-        }
+        $this->overviewMapControl = $overviewMapControl;
     }
 
     /**
@@ -172,29 +131,11 @@ class Controls
     /**
      * Sets the map pan control.
      *
-     * Available prototypes:
-     *  - function setPanControl(Ivory\GoogleMap\Controls\PanControl $panControl = null)
-     *  - function setPanControl(string $controlPosition)
-     *
-     * @throws \Ivory\GoogleMap\Exception\ControlException If the pan control is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Controls\PanControl|null $panControl The map pan control.
      */
-    public function setPanControl()
+    public function setPanControl(PanControl $panControl = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof PanControl)) {
-            $this->panControl = $args[0];
-        } elseif (isset($args[0]) && is_string($args[0])) {
-            if ($this->panControl === null) {
-                $this->panControl = new PanControl();
-            }
-
-            $this->panControl->setControlPosition($args[0]);
-        } elseif (!isset($args[0])) {
-            $this->panControl = null;
-        } else {
-            throw ControlException::invalidPanControl();
-        }
+        $this->panControl = $panControl;
     }
 
     /**
@@ -220,29 +161,11 @@ class Controls
     /**
      * Sets the map rotate control.
      *
-     * Available prototypes:
-     *  - function setRotateControl(Ivory\GoogleMap\Controls\RotateControl $rotateControl = null)
-     *  - function setRotateControl(string $controlPosition)
-     *
-     * @throws \Ivory\GoogleMap\Exception\ControlException If the rotate control is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Controls\RotateControl|null $rotateControl The rotate control.
      */
-    public function setRotateControl()
+    public function setRotateControl(RotateControl $rotateControl = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof RotateControl)) {
-            $this->rotateControl = $args[0];
-        } elseif (isset($args[0]) && is_string($args[0])) {
-            if ($this->rotateControl === null) {
-                $this->rotateControl = new RotateControl();
-            }
-
-            $this->rotateControl->setControlPosition($args[0]);
-        } elseif (!isset($args[0])) {
-            $this->rotateControl = null;
-        } else {
-            throw ControlException::invalidRotateControl();
-        }
+        $this->rotateControl = $rotateControl;
     }
 
     /**
@@ -268,30 +191,11 @@ class Controls
     /**
      * Sets the map scale control.
      *
-     * Available prototypes:
-     *  - function setScaleControl(Ivory\GoogleMap\Controls\ScaleControl $scaleControl = null)
-     *  - function setScaleControl(string $controlPosition, string $scaleControlStyle)
-     *
-     * @throws \Ivory\GoogleMap\Exception\ControlException If the scale control is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Controls\ScaleControl|null $scaleControl The map scale control.
      */
-    public function setScaleControl()
+    public function setScaleControl(ScaleControl $scaleControl = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof ScaleControl)) {
-            $this->scaleControl = $args[0];
-        } elseif ((isset($args[0]) && is_string($args[0])) && (isset($args[1]) && is_string($args[1]))) {
-            if ($this->scaleControl === null) {
-                $this->scaleControl = new ScaleControl();
-            }
-
-            $this->scaleControl->setControlPosition($args[0]);
-            $this->scaleControl->setScaleControlStyle($args[1]);
-        } elseif (!isset($args[0])) {
-            $this->scaleControl = null;
-        } else {
-            throw ControlException::invalidScaleControl();
-        }
+        $this->scaleControl = $scaleControl;
     }
 
     /**
@@ -317,29 +221,11 @@ class Controls
     /**
      * Sets the map street view control.
      *
-     * Available prototypes:
-     *  - function setStreetViewControl(Ivory\GoogleMap\Controls\StreetViewControl $streetViewControl = null)
-     *  - function setStreetViewControl(string $controlPosition)
-     *
-     * @throws \Ivory\GoogleMap\Exception\ControlException If the street view control is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Controls\StreetViewControl|null $streetViewControl The map street view control.
      */
-    public function setStreetViewControl()
+    public function setStreetViewControl(StreetViewControl $streetViewControl = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof StreetViewControl)) {
-            $this->streetViewControl = $args[0];
-        } elseif (isset($args[0]) && is_string($args[0])) {
-            if ($this->streetViewControl === null) {
-                $this->streetViewControl = new StreetViewControl();
-            }
-
-            $this->streetViewControl->setControlPosition($args[0]);
-        } elseif (!isset($args[0])) {
-            $this->streetViewControl = null;
-        } else {
-            throw ControlException::invalidStreetViewControl();
-        }
+        $this->streetViewControl = $streetViewControl;
     }
 
     /**
@@ -365,29 +251,10 @@ class Controls
     /**
      * Sets the map zoom control.
      *
-     * Available prototypes:
-     *  - function setZoomControl(Ivory\GoogleMap\Controls\ZoomControl $zoomControl = null)
-     *  - function setZoomControl(string $controlPosition, string $zoomControlStyle)
-     *
-     * @throws \Ivory\GoogleMap\Exception\ControlException If the zoom control is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Controls\ZoomControl|null $zoomControl The map zoom control.
      */
-    public function setZoomControl()
+    public function setZoomControl(ZoomControl $zoomControl = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof ZoomControl)) {
-            $this->zoomControl = $args[0];
-        } elseif ((isset($args[0]) && is_string($args[0])) && (isset($args[1]) && is_string($args[1]))) {
-            if ($this->zoomControl === null) {
-                $this->zoomControl = new ZoomControl();
-            }
-
-            $this->zoomControl->setControlPosition($args[0]);
-            $this->zoomControl->setZoomControlStyle($args[1]);
-        } elseif (!isset($args[0])) {
-            $this->zoomControl = null;
-        } else {
-            throw ControlException::invalidZoomControl();
-        }
+        $this->zoomControl = $zoomControl;
     }
 }
