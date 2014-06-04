@@ -80,33 +80,6 @@ class PlaceException extends Exception
     }
 
     /**
-     * Gets the "INVALID AUTOCOMPLETE BOUND" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\PlaceException The "INVALID AUTOCOMPLETE BOUND" exception.
-     */
-    public static function invalidAutocompleteBound()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The bound setter arguments is invalid.',
-            'The available prototypes are :',
-            ' - function setBound(Ivory\GoogleMap\Base\Bound $bound)',
-            ' - function setBount('.
-            'Ivory\GoogleMap\Base\Coordinate $southWest, '.
-            'Ivory\GoogleMap\Base\Coordinate $northEast'.
-            ')',
-            ' - function setBound('.
-            'double $southWestLatitude, '.
-            'double $southWestLongitude, '.
-            'double $northEastLatitude, '.
-            'double $northEastLongitude, '.
-            'boolean southWestNoWrap = true, '.
-            'boolean $northEastNoWrap = true'.
-            ')'
-        ));
-    }
-
-    /**
      * Gets the "INVALID AUTOCOMPLETE COMPONENT RESTRICTION" exception.
      *
      * @return \Ivory\GoogleMap\Exception\PlaceException The "INVALID AUTOCOMPLETE COMPONENT RESTRICTION" exception.

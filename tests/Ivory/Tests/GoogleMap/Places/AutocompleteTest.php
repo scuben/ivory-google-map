@@ -77,56 +77,12 @@ class AutocompleteTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($bound, $this->autocomplete->getBound());
     }
 
-    public function testBoundWithCoordinates()
-    {
-        $southWestCoordinate = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-        $northEastCoordinate = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-
-        $this->autocomplete->setBound($southWestCoordinate, $northEastCoordinate);
-
-        $this->assertSame($southWestCoordinate, $this->autocomplete->getBound()->getSouthWest());
-        $this->assertSame($northEastCoordinate, $this->autocomplete->getBound()->getNorthEast());
-    }
-
-    public function testBoundWithLatitudesAndLongitudes()
-    {
-        $this->autocomplete->setBound(1, 2, 3, 4, true, false);
-
-        $this->assertSame(1, $this->autocomplete->getBound()->getSouthWest()->getLatitude());
-        $this->assertSame(2, $this->autocomplete->getBound()->getSouthWest()->getLongitude());
-        $this->assertTrue($this->autocomplete->getBound()->getSouthWest()->isNoWrap());
-
-        $this->assertEquals(3, $this->autocomplete->getBound()->getNorthEast()->getLatitude());
-        $this->assertEquals(4, $this->autocomplete->getBound()->getNorthEast()->getLongitude());
-        $this->assertFalse($this->autocomplete->getBound()->getNorthEast()->isNoWrap());
-    }
-
     public function testBoundWithNullValue()
     {
-        $this->autocomplete->setBound(1, 2, 3, 4);
+        $this->autocomplete->setBound($this->getMock('Ivory\GoogleMap\Base\Bound'));
         $this->autocomplete->setBound(null);
 
         $this->assertNull($this->autocomplete->getBound());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\PlaceException
-     * @expectedExceptionMessage The bound setter arguments is invalid.
-     * The available prototypes are :
-     * - function setBound(Ivory\GoogleMap\Base\Bound $bound)
-     * - function setBount(Ivory\GoogleMap\Base\Coordinate $southWest, Ivory\GoogleMap\Base\Coordinate $northEast)
-     * - function setBound(
-     *     double $southWestLatitude,
-     *     double $southWestLongitude,
-     *     double $northEastLatitude,
-     *     double $northEastLongitude,
-     *     boolean southWestNoWrap = true,
-     *     boolean $northEastNoWrap = true
-     * )
-     */
-    public function testBoundWithInvalidValue()
-    {
-        $this->autocomplete->setBound('foo');
     }
 
     public function testTypesWithValidTypes()
