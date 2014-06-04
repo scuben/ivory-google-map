@@ -56,37 +56,12 @@ class CircleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($radius, $this->circle->getRadius());
     }
 
-    public function testCenterWithCoordinate()
+    public function testCenter()
     {
         $center = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
         $this->circle->setCenter($center);
 
         $this->assertSame($center, $this->circle->getCenter());
-    }
-
-    public function testCenterWithLatitudeAndLongitude()
-    {
-        $latitude = 1;
-        $longitude = 2;
-
-        $this->circle->setCenter($latitude, $longitude, true);
-
-        $this->assertSame($latitude, $this->circle->getCenter()->getLatitude());
-        $this->assertSame($longitude, $this->circle->getCenter()->getLongitude());
-        $this->assertTrue($this->circle->getCenter()->isNoWrap());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage
-     * The center setter arguments is invalid.
-     * The available prototypes are :
-     * - function setCenter(Ivory\GoogleMap\Base\Coordinate $center)
-     * - function setCenter(double $latitude, double $longitude, boolean $noWrap = true)
-     */
-    public function testCenterWithInvalidValue()
-    {
-        $this->circle->setCenter('foo');
     }
 
     public function testRadiusWithValidValue()

@@ -76,28 +76,10 @@ class Polygon extends AbstractOptionsAsset implements ExtendableInterface
     /**
      * Adds a coordinate to the polygon.
      *
-     * Available prototypes:
-     *  - function addCoordinate(Ivory\GoogleMap\Base\Coordinate $coordinate)
-     *  - function addCoordinate(double $latitude, double $longitude, boolean $noWrap = true)
-     *
-     * @throws \Ivory\GoogleMap\Exception\OverlayException If the coordinate is not valid.
+     * @param \Ivory\GoogleMap\Base\Coordinate $coordinate The coordinate.
      */
-    public function addCoordinate()
+    public function addCoordinate(Coordinate $coordinate)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->coordinates[] = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            $coordinate = new Coordinate($args[0], $args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $coordinate->setNoWrap($args[2]);
-            }
-
-            $this->coordinates[] = $coordinate;
-        } else {
-            throw OverlayException::invalidPolygonCoordinate();
-        }
+        $this->coordinates[] = $coordinate;
     }
 }

@@ -82,7 +82,7 @@ class GroundOverlayTest extends \PHPUnit_Framework_TestCase
         $this->groundOverlay->setUrl(true);
     }
 
-    public function testBoundWithValidBound()
+    public function testBound()
     {
         $bound = $this->getMock('Ivory\GoogleMap\Base\Bound');
         $bound
@@ -108,37 +108,5 @@ class GroundOverlayTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
 
         $this->groundOverlay->setBound($bound);
-    }
-
-    public function testBoundWithSouthWestAndNorthEast()
-    {
-        $southWest = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-        $northEast = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-
-        $this->groundOverlay->setBound($southWest, $northEast);
-
-        $this->assertSame($southWest, $this->groundOverlay->getBound()->getSouthWest());
-        $this->assertSame($northEast, $this->groundOverlay->getBound()->getNorthEast());
-    }
-
-    public function testBoundWithLatitudesAndLongitudes()
-    {
-        $this->groundOverlay->setBound(-1, -2, 1, 2, true, false);
-
-        $this->assertSame(-1, $this->groundOverlay->getBound()->getSouthWest()->getLatitude());
-        $this->assertSame(-2, $this->groundOverlay->getBound()->getSouthWest()->getLongitude());
-        $this->assertTrue($this->groundOverlay->getBound()->getSouthWest()->isNoWrap());
-
-        $this->assertSame(1, $this->groundOverlay->getBound()->getNorthEast()->getLatitude());
-        $this->assertSame(2, $this->groundOverlay->getBound()->getNorthEast()->getLongitude());
-        $this->assertFalse($this->groundOverlay->getBound()->getNorthEast()->isNoWrap());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     */
-    public function testBoundWithInvalidValue()
-    {
-        $this->groundOverlay->setBound('foo');
     }
 }

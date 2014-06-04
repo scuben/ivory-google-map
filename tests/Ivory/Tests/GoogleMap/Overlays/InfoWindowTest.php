@@ -69,24 +69,12 @@ class InfoWindowTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->infoWindow->isAutoClose());
     }
 
-    public function testPositionWithCoordinate()
+    public function testPosition()
     {
         $position = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
         $this->infoWindow->setPosition($position);
 
         $this->assertSame($position, $this->infoWindow->getPosition());
-    }
-
-    public function testPositionWithLatitudeAndLongitude()
-    {
-        $latitude = 2;
-        $longitude = 3;
-
-        $this->infoWindow->setPosition($latitude, $longitude, true);
-
-        $this->assertSame($latitude, $this->infoWindow->getPosition()->getLatitude());
-        $this->assertSame($longitude, $this->infoWindow->getPosition()->getLongitude());
-        $this->assertTrue($this->infoWindow->getPosition()->isNoWrap());
     }
 
     public function testPositionWithNullValue()
@@ -97,18 +85,6 @@ class InfoWindowTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->infoWindow->getPosition());
     }
 
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage The position setter arguments is invalid.
-     * The available prototypes are :
-     * - function setPosition(Ivory\GoogleMap\Base\Coordinate $position)
-     * - function setPosition(double $latitude, double $longitude, boolean $noWrap = true)
-     */
-    public function testPositionWithInvalidValue()
-    {
-        $this->infoWindow->setPosition('foo');
-    }
-
     public function testPixedOffsetWithSize()
     {
         $size = $this->getMock('Ivory\GoogleMap\Base\Size');
@@ -117,39 +93,12 @@ class InfoWindowTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($size, $this->infoWindow->getPixelOffset());
     }
 
-    public function testPixedOffsetWithWidthAndHeight()
-    {
-        $width = 2;
-        $widthUnit = 'px';
-        $height = 3;
-        $heightUnit = '%';
-
-        $this->infoWindow->setPixelOffset($width, $height, $widthUnit, $heightUnit);
-
-        $this->assertSame($width, $this->infoWindow->getPixelOffset()->getWidth());
-        $this->assertSame($widthUnit, $this->infoWindow->getPixelOffset()->getWidthUnit());
-        $this->assertSame($height, $this->infoWindow->getPixelOffset()->getHeight());
-        $this->assertSame($heightUnit, $this->infoWindow->getPixelOffset()->getHeightUnit());
-    }
-
     public function testPixelOffsetWithNullValue()
     {
         $this->infoWindow->setPixelOffset($this->getMock('Ivory\GoogleMap\Base\Size'));
         $this->infoWindow->setPixelOffset(null);
 
         $this->assertNull($this->infoWindow->getPixelOffset());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage The pixel offset setter arguments is invalid.
-     * The available prototypes are :
-     * - function setPixelOffset(Ivory\GoogleMap\Base\Size $scaledSize)
-     * - function setPixelOffset(double $width, double $height, string $widthUnit = null, string $heightUnit = null)
-     */
-    public function testPixedOffsetWithInvalidValue()
-    {
-        $this->infoWindow->setPixelOffset('foo');
     }
 
     public function testContentWithValidValue()

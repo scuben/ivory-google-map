@@ -62,28 +62,11 @@ class Circle extends AbstractOptionsAsset implements ExtendableInterface
     /**
      * Sets the circle center.
      *
-     * Available prototypes:
-     *  - function setCenter(Ivory\GoogleMap\Base\Coordinate $center)
-     *  - function setCenter(double $latitude, double $longitude, boolean $noWrap = true)
-     *
-     * @throws \Ivory\GoogleMap\Exception\OverlayException If the center is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Base\Coordinate $center The circle center
      */
-    public function setCenter()
+    public function setCenter(Coordinate $center)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->center = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            $this->center->setLatitude($args[0]);
-            $this->center->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $this->center->setNoWrap($args[2]);
-            }
-        } else {
-            throw OverlayException::invalidCircleCenter();
-        }
+        $this->center = $center;
     }
 
     /**

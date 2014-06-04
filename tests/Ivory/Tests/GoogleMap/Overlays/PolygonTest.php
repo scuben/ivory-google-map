@@ -57,30 +57,14 @@ class PolygonTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($coordinates, $this->polygon->getCoordinates());
     }
 
-    public function testCoordinateWithLatitudeAndLongitude()
+    public function testAddCoordinate()
     {
-        $latitude = 1;
-        $longitude = 2;
-
-        $this->polygon->addCoordinate($latitude, $longitude, true);
+        $coordinateMock = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
+        $this->polygon->addCoordinate($coordinateMock);
 
         $coordinates = $this->polygon->getCoordinates();
 
         $this->assertArrayHasKey(0, $coordinates);
-        $this->assertSame($latitude, $coordinates[0]->getLatitude());
-        $this->assertSame($longitude, $coordinates[0]->getLongitude());
-        $this->assertTrue($coordinates[0]->isNoWrap());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage The coordinate adder arguments is invalid.
-     * The available prototypes are :
-     * - function addCoordinate(Ivory\GoogleMap\Base\Coordinate $coordinate)
-     * - function addCoordinate(double $latitude, double $longitude, boolean $noWrap = true)
-     */
-    public function testCoordinateWithInvalidValue()
-    {
-        $this->polygon->addCoordinate('foo');
+        $this->assertSame(array($coordinateMock), $this->polygon->getCoordinates());
     }
 }

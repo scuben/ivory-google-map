@@ -63,7 +63,7 @@ class RectangleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($bound, $this->rectangle->getBound());
     }
 
-    public function testBoundWithValidBound()
+    public function testBound()
     {
         $bound = $this->getMock('Ivory\GoogleMap\Base\Bound');
         $bound
@@ -83,62 +83,5 @@ class RectangleTest extends \PHPUnit_Framework_TestCase
     public function testBoundWithInvalidBound()
     {
         $this->rectangle->setBound($this->getMock('Ivory\GoogleMap\Base\Bound'));
-    }
-
-    public function testBoundWithCoordinates()
-    {
-        $southWeestCoordinate = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-        $northEastCoordinate = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-
-        $this->rectangle->setBound($southWeestCoordinate, $northEastCoordinate);
-
-        $this->assertSame($southWeestCoordinate, $this->rectangle->getBound()->getSouthWest());
-        $this->assertSame($northEastCoordinate, $this->rectangle->getBound()->getNorthEast());
-    }
-
-    public function testBoundWithLatitudesAndLongitudes()
-    {
-        $southWestLatitude = 1;
-        $southWestLongitue = 2;
-
-        $northEastLatitude = -1;
-        $northEastLongitude = -2;
-
-        $this->rectangle->setBound(
-            $southWestLatitude,
-            $southWestLongitue,
-            $northEastLatitude,
-            $northEastLongitude,
-            true,
-            false
-        );
-
-        $this->assertSame($southWestLatitude, $this->rectangle->getBound()->getSouthWest()->getLatitude());
-        $this->assertSame($southWestLongitue, $this->rectangle->getBound()->getSouthWest()->getLongitude());
-        $this->assertTrue($this->rectangle->getBound()->getSouthWest()->isNoWrap());
-
-        $this->assertSame($northEastLatitude, $this->rectangle->getBound()->getNorthEast()->getLatitude());
-        $this->assertSame($northEastLongitude, $this->rectangle->getBound()->getNorthEast()->getLongitude());
-        $this->assertFalse($this->rectangle->getBound()->getNorthEast()->isNoWrap());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage The bound setter arguments is invalid.
-     * The available prototypes are :
-     * - function setBound(Ivory\GoogleMap\Base\Bound $bound)
-     * - function setBount(Ivory\GoogleMap\Base\Coordinate $southWest, Ivory\GoogleMap\Base\Coordinate $northEast)
-     * - function setBound(
-     *     double $southWestLatitude,
-     *     double $southWestLongitude,
-     *     double $northEastLatitude,
-     *     double $northEastLongitude,
-     *     boolean southWestNoWrap = true,
-     *     boolean $northEastNoWrap = true
-     * )
-     */
-    public function testBoundWithInvalidValue()
-    {
-        $this->rectangle->setBound('foo');
     }
 }

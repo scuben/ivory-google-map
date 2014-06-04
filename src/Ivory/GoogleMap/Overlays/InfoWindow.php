@@ -98,36 +98,13 @@ class InfoWindow extends AbstractOptionsAsset implements ExtendableInterface
     }
 
     /**
-     * Sets the info window position
+     * Sets the info window position.
      *
-     * Available prototypes:
-     *  - function setPosition(Ivory\GoogleMap\Base\Coordinate $position = null)
-     *  - function setPosition(double $latitude, double $longitude, boolean $noWrap = true)
-     *
-     * @throws \Ivory\GoogleMap\Exception\OverlayException If the position is not valid.
+     * @param \Ivory\GoogleMap\Base\Coordinate|null $coordinate The coordinate.
      */
-    public function setPosition()
+    public function setPosition(Coordinate $coordinate = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->position = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            if ($this->position === null) {
-                $this->position = new Coordinate();
-            }
-
-            $this->position->setLatitude($args[0]);
-            $this->position->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $this->position->setNoWrap($args[2]);
-            }
-        } elseif (!isset($args[0])) {
-            $this->position = null;
-        } else {
-            throw OverlayException::invalidInfoWindowPosition();
-        }
+        $this->position = $coordinate;
     }
 
     /**
@@ -159,32 +136,9 @@ class InfoWindow extends AbstractOptionsAsset implements ExtendableInterface
      *
      * @throws \Ivory\GoogleMap\Exception\OverlayException If the pixel offset is not valid (prototypes).
      */
-    public function setPixelOffset()
+    public function setPixelOffset(Size $pixelOffset = null)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Size)) {
-            $this->pixedOffset = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            if ($this->pixedOffset === null) {
-                $this->pixedOffset = new Size();
-            }
-
-            $this->pixedOffset->setWidth($args[0]);
-            $this->pixedOffset->setHeight($args[1]);
-
-            if (isset($args[2]) && is_string($args[2])) {
-                $this->pixedOffset->setWidthUnit($args[2]);
-            }
-
-            if (isset($args[3]) && is_string($args[3])) {
-                $this->pixedOffset->setHeightUnit($args[3]);
-            }
-        } elseif (!isset($args[0])) {
-            $this->pixedOffset = null;
-        } else {
-            throw OverlayException::invalidInfoWindowPixelOffset();
-        }
+        $this->pixedOffset = $pixelOffset;
     }
 
     /**

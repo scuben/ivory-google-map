@@ -85,24 +85,12 @@ class MarkerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($infoWindow, $this->marker->getInfoWindow());
     }
 
-    public function testPositionWithCoordinate()
+    public function testPosition()
     {
         $coordinate = $this->getMock('ivory\GoogleMap\Base\Coordinate');
         $this->marker->setPosition($coordinate);
 
         $this->assertSame($coordinate, $this->marker->getPosition());
-    }
-
-    public function testPositionWithLatitudeAndLongitude()
-    {
-        $latitude = 1;
-        $longitude = 2;
-
-        $this->marker->setPosition($latitude, $longitude, true);
-
-        $this->assertSame($latitude, $this->marker->getPosition()->getLatitude());
-        $this->assertSame($longitude, $this->marker->getPosition()->getLongitude());
-        $this->assertTrue($this->marker->getPosition()->isNoWrap());
     }
 
     public function testPositionWithNullValue()
@@ -111,18 +99,6 @@ class MarkerTest extends \PHPUnit_Framework_TestCase
         $this->marker->setPosition(null);
 
         $this->assertNull($this->marker->getPosition());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage The position setter arguments is invalid.
-     * The available prototypes are :
-     * - function setPosition(Ivory\GoogleMap\Base\Coordinate $position)
-     * - function setPosition(double $latitude, double $longitude, boolean $noWrap = true)
-     */
-    public function testPositionWithInvalidValue()
-    {
-        $this->marker->setPosition('foo');
     }
 
     public function testAnimationWithValidValue()
@@ -141,7 +117,7 @@ class MarkerTest extends \PHPUnit_Framework_TestCase
         $this->marker->setAnimation('foo');
     }
 
-    public function testIconWithValidMarkerImage()
+    public function testIcon()
     {
         $markerImage = $this->getMock('Ivory\GoogleMap\Overlays\MarkerImage');
         $markerImage
@@ -164,34 +140,21 @@ class MarkerTest extends \PHPUnit_Framework_TestCase
         $this->marker->setIcon($markerImage);
     }
 
-    public function testIconWithUrl()
-    {
-        $this->marker->setIcon('foo');
-
-        $this->assertSame('foo', $this->marker->getIcon()->getUrl());
-    }
-
     public function testIconWithNullValue()
     {
-        $this->marker->setIcon('foo');
+        $markerImage = $this->getMock('Ivory\GoogleMap\Overlays\MarkerImage');
+        $markerImage
+            ->expects($this->once())
+            ->method('getUrl')
+            ->will($this->returnValue('foo'));
+
+        $this->marker->setIcon($markerImage);
         $this->marker->setIcon(null);
 
         $this->assertNull($this->marker->getIcon());
     }
 
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage The icon setter arguments is invalid.
-     * The available prototypes are :
-     * - function setIcon(Ivory\GoogleMap\Overlays\MarkerImage $markerImage = null)
-     * - function setIcon(string $url = null)
-     */
-    public function testIconWithInvalidValue()
-    {
-        $this->marker->setIcon(true);
-    }
-
-    public function testShadowWithValidMarkerImage()
+    public function testShadow()
     {
         $markerImage = $this->getMock('Ivory\GoogleMap\Overlays\MarkerImage');
         $markerImage
@@ -214,34 +177,20 @@ class MarkerTest extends \PHPUnit_Framework_TestCase
         $this->marker->setShadow($markerImage);
     }
 
-    public function testShadowWithUrl()
-    {
-        $this->marker->setShadow('foo');
-
-        $this->assertSame('foo', $this->marker->getShadow()->getUrl());
-    }
-
     public function testShadowWithNullValue()
     {
-        $this->marker->setShadow('foo');
+        $markerImage = $this->getMock('Ivory\GoogleMap\Overlays\MarkerImage');
+        $markerImage
+            ->expects($this->once())
+            ->method('getUrl')
+            ->will($this->returnValue('foo'));
+        $this->marker->setShadow($markerImage);
         $this->marker->setShadow(null);
 
         $this->assertNull($this->marker->getShadow());
     }
 
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage The shadow setter arguments is invalid.
-     * The available prototypes are :
-     * - function setShadow(Ivory\GoogleMap\Overlays\MarkerImage $markerImage = null)
-     * - function setShadow(string $url = null)
-     */
-    public function testShadowWithInvalidValue()
-    {
-        $this->marker->setShadow(true);
-    }
-
-    public function testShapeWithValidMarkerShape()
+    public function testShape()
     {
         $markerShape = $this->getMock('Ivory\GoogleMap\Overlays\MarkerShape');
         $markerShape
@@ -264,35 +213,18 @@ class MarkerTest extends \PHPUnit_Framework_TestCase
         $this->marker->setShape($markerShape);
     }
 
-    public function testShapeWithTypeAndCoordinates()
-    {
-        $type = 'poly';
-        $coordinates = array(1, 2, 3, 4);
-
-        $this->marker->setShape($type, $coordinates);
-
-        $this->assertSame($type, $this->marker->getShape()->getType());
-        $this->assertSame($coordinates, $this->marker->getShape()->getCoordinates());
-    }
-
     public function testShapeWithNullValue()
     {
-        $this->marker->setShape('poly', array(1, 2, 3, 4));
+        $markerShape = $this->getMock('Ivory\GoogleMap\Overlays\MarkerShape');
+        $markerShape
+            ->expects($this->once())
+            ->method('hasCoordinates')
+            ->will($this->returnValue(true));
+
+        $this->marker->setShape($markerShape);
         $this->marker->setShape(null);
 
         $this->assertNull($this->marker->getShape());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\OverlayException
-     * @expectedExceptionMessage The shape setter arguments is invalid.
-     * The available prototypes are :
-     * - function setShape(Ivory\GoogleMap\Overlays\MarkerShape $shape = null)
-     * - function setShape(string $type, array $coordinates)
-     */
-    public function testShapeWithInvalidValue()
-    {
-        $this->marker->setShape(true);
     }
 
     public function testInfoWindow()

@@ -90,52 +90,16 @@ class GroundOverlay extends AbstractOptionsAsset implements ExtendableInterface
     /**
      * Sets the ground overlay bound.
      *
-     * Available prototypes:
-     *  - function setBound(Ivory\GoogleMap\Base\Bound $bound)
-     *  - function setBount(Ivory\GoogleMap\Base\Coordinate $southWest, Ivory\GoogleMap\Base\Coordinate $northEast)
-     *  - function setBound(
-     *     double $southWestLatitude,
-     *     double $southWestLongitude,
-     *     double $northEastLatitude,
-     *     double $northEastLongitude,
-     *     boolean southWestNoWrap = true,
-     *     boolean $northEastNoWrap = true
-     *  )
+     * @param \Ivory\GoogleMap\Base\Bound $bound The bound.
      *
      * @throws \Ivory\GoogleMap\Exception\OverlayException If the ground overlay bound is not valid (prototypes).
      */
-    public function setBound()
+    public function setBound(Bound $bound)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof Bound)) {
-            if ($args[0]->hasCoordinates()) {
-                $this->bound = $args[0];
-            } else {
-                throw OverlayException::invalidGroundOverlayBoundCoordinates();
-            }
-        } elseif ((isset($args[0]) && ($args[0] instanceof Coordinate))
-            && (isset($args[1]) && ($args[1] instanceof Coordinate))
-        ) {
-            $this->bound->setSouthWest($args[0]);
-            $this->bound->setNorthEast($args[1]);
-        } elseif ((isset($args[0]) && is_numeric($args[0]))
-            && (isset($args[1]) && is_numeric($args[1]))
-            && (isset($args[2]) && is_numeric($args[2]))
-            && (isset($args[3]) && is_numeric($args[3]))
-        ) {
-            $this->bound->setSouthWest(new Coordinate($args[0], $args[1]));
-            $this->bound->setNorthEast(new Coordinate($args[2], $args[3]));
-
-            if (isset($args[4]) && is_bool($args[4])) {
-                $this->bound->getSouthWest()->setNoWrap($args[4]);
-            }
-
-            if (isset($args[5]) && is_bool($args[5])) {
-                $this->bound->getNorthEast()->setNoWrap($args[5]);
-            }
-        } else {
-            throw OverlayException::invalidGroundOverlayBound();
+        if (!$bound->hasCoordinates()) {
+            throw OverlayException::invalidGroundOverlayBoundCoordinates();
         }
+
+        $this->bound = $bound;
     }
 }
