@@ -238,6 +238,13 @@ class AutocompleteTest extends \PHPUnit_Framework_TestCase
         $this->autocomplete->removeComponentRestriction(AutocompleteComponentRestriction::COUNTRY);
     }
 
+    public function testValue()
+    {
+        $this->autocomplete->setValue('foo');
+
+        $this->assertSame('foo', $this->autocomplete->getValue());
+    }
+
     public function testInputAttributesWithValidValue()
     {
         $this->autocomplete->setInputAttributes(array('foo' => 'bar'));

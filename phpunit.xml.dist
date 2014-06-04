@@ -4,6 +4,8 @@
     <testsuites>
         <testsuite name="Ivory Google Map Test Suite">
             <directory suffix="Test.php">./tests/</directory>
+            <!-- TO REMOVE -->
+            <exclude>./tests/Ivory/Tests/GoogleMap/Helper/</exclude>
         </testsuite>
     </testsuites>
     <filter>

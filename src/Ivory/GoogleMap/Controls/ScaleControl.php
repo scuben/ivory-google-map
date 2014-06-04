@@ -80,7 +80,7 @@ class ScaleControl
     /**
      * Sets the scale control style.
      *
-     * @param type $scaleControlStyle The scale control style.
+     * @param string $scaleControlStyle The scale control style.
      *
      * @throws \Ivory\GoogleMap\Exception\ControlException If the scale control style is not valid.
      */

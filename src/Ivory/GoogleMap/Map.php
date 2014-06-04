@@ -14,25 +14,11 @@ namespace Ivory\GoogleMap;
 use Ivory\GoogleMap\Assets\AbstractJavascriptVariableAsset;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Base\Bound;
-use Ivory\GoogleMap\Controls\MapTypeControl;
-use Ivory\GoogleMap\Controls\OverviewMapControl;
-use Ivory\GoogleMap\Controls\PanControl;
-use Ivory\GoogleMap\Controls\RotateControl;
-use Ivory\GoogleMap\Controls\ScaleControl;
-use Ivory\GoogleMap\Controls\StreetViewControl;
-use Ivory\GoogleMap\Controls\ZoomControl;
-use Ivory\GoogleMap\Events\EventManager;
+use Ivory\GoogleMap\Controls\Controls;
+use Ivory\GoogleMap\Events\Events;
 use Ivory\GoogleMap\Exception\MapException;
-use Ivory\GoogleMap\Layers\KMLLayer;
-use Ivory\GoogleMap\Overlays\Circle;
-use Ivory\GoogleMap\Overlays\EncodedPolyline;
-use Ivory\GoogleMap\Overlays\GroundOverlay;
-use Ivory\GoogleMap\Overlays\InfoWindow;
-use Ivory\GoogleMap\Overlays\Marker;
-use Ivory\GoogleMap\Overlays\MarkerCluster;
-use Ivory\GoogleMap\Overlays\Polygon;
-use Ivory\GoogleMap\Overlays\Polyline;
-use Ivory\GoogleMap\Overlays\Rectangle;
+use Ivory\GoogleMap\Layers\Layers;
+use Ivory\GoogleMap\Overlays\Overlays;
 
 /**
  * Map wich describes a google map.
@@ -63,56 +49,17 @@ class Map extends AbstractJavascriptVariableAsset
     /** @var array */
     protected $stylesheetOptions;
 
-    /** @var \Ivory\GoogleMap\Controls\MapTypeControl */
-    protected $mapTypeControl;
+    /** @var \Ivory\GoogleMap\Controls\Controls */
+    protected $controls;
 
-    /** @var \Ivory\GoogleMap\Controls\OverviewMapControl */
-    protected $overviewMapControl;
+    /** @var \Ivory\GoogleMap\Overlays\Overlays */
+    protected $overlays;
 
-    /** @var \Ivory\GoogleMap\Controls\PanControl */
-    protected $panControl;
+    /** @var \Ivory\GoogleMap\Layers\Layers */
+    protected $layers;
 
-    /** @var \Ivory\GoogleMap\Controls\RotateControl */
-    protected $rotateControl;
-
-    /** @var \Ivory\GoogleMap\Controls\ScaleControl */
-    protected $scaleControl;
-
-    /** @var \Ivory\GoogleMap\Controls\StreetViewControl */
-    protected $streetViewControl;
-
-    /** @var \Ivory\GoogleMap\Controls\ZoomControl */
-    protected $zoomControl;
-
-    /** @var \Ivory\GoogleMap\Events\EventManager */
-    protected $eventManager;
-
-    /** @var \Ivory\GoogleMap\Overlays\MarkerCluster */
-    protected $markerCluster;
-
-    /** @var array */
-    protected $infoWindows;
-
-    /** @var array */
-    protected $polylines;
-
-    /** @var array */
-    protected $encodedPolylines;
-
-    /** @var array */
-    protected $polygons;
-
-    /** @var array */
-    protected $rectangles;
-
-    /** @var array */
-    protected $circles;
-
-    /** @var array */
-    protected $groundOverlays;
-
-    /** @var array */
-    protected $kmlLayers;
+    /** @var \Ivory\GoogleMap\Events\Events */
+    protected $events;
 
     /** @var array */
     protected $libraries;
@@ -133,7 +80,6 @@ class Map extends AbstractJavascriptVariableAsset
 
         $this->center = new Coordinate();
         $this->bound = new Bound();
-        $this->eventManager = new EventManager();
 
         $this->mapOptions = array(
             'mapTypeId' => MapTypeId::ROADMAP,
@@ -145,16 +91,10 @@ class Map extends AbstractJavascriptVariableAsset
             'height' => '300px',
         );
 
-        $this->markerCluster = new MarkerCluster();
-
-        $this->infoWindows = array();
-        $this->polylines = array();
-        $this->encodedPolylines = array();
-        $this->polygons = array();
-        $this->rectangles = array();
-        $this->circles = array();
-        $this->groundOverlays = array();
-        $this->kmlLayers = array();
+        $this->controls = new Controls();
+        $this->overlays = new Overlays($this);
+        $this->layers = new Layers();
+        $this->events = new Events();
 
         $this->libraries = array();
         $this->language = 'en';
@@ -519,643 +459,87 @@ class Map extends AbstractJavascriptVariableAsset
     }
 
     /**
-     * Checks if the map has a map type control.
+     * Gets the map controls.
      *
-     * @return boolean TRUE if the map has a map type control else FALSE.
+     * @return \Ivory\GoogleMap\Controls\Controls The map controls.
      */
-    public function hasMapTypeControl()
+    public function getControls()
     {
-        return $this->mapTypeControl !== null;
+        return $this->controls;
     }
 
     /**
-     * Gets the map type control.
+     * Sets the map controls.
      *
-     * @return \Ivory\GoogleMap\Controls\MapTypeControl The map type control.
+     * @param \Ivory\GoogleMap\Controls\Controls $controls The map controls.
      */
-    public function getMapTypeControl()
+    public function setControls(Controls $controls)
     {
-        return $this->mapTypeControl;
+        $this->controls = $controls;
     }
 
     /**
-     * Sets the map type control.
+     * Gets the map overlays.
      *
-     * Available prototypes:
-     *  - function setMapTypeControl(Ivory\GoogleMap\Controls\MapTypeControl $mapTypeControl = null)
-     *  - function setMaptypeControl(array $mapTypeIds, string $controlPosition, string $mapTypeControlStyle)
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the map type control is not valid (prototypes).
+     * @return \Ivory\GoogleMap\Overlays\Overlays The map overlays.
      */
-    public function setMapTypeControl()
+    public function getOverlays()
     {
-        $args = func_get_args();
+        return $this->overlays;
+    }
 
-        if (isset($args[0]) && ($args[0] instanceof MapTypeControl)) {
-            $this->mapTypeControl = $args[0];
-            $this->mapOptions['mapTypeControl'] = true;
-        } elseif ((isset($args[0]) && is_array($args[0]))
-            && (isset($args[1]) && is_string($args[1]))
-            && (isset($args[2]) && is_string($args[2]))
-        ) {
-            if ($this->mapTypeControl === null) {
-                $this->mapTypeControl = new MapTypeControl();
-            }
+    /**
+     * Sets the map overlays.
+     *
+     * @param \Ivory\GoogleMap\Overlays\Overlays $overlays The map overlays.
+     */
+    public function setOverlays(Overlays $overlays)
+    {
+        $this->overlays = $overlays;
 
-            $this->mapTypeControl->setMapTypeIds($args[0]);
-            $this->mapTypeControl->setControlPosition($args[1]);
-            $this->mapTypeControl->setMapTypeControlStyle($args[2]);
-
-            $this->mapOptions['mapTypeControl'] = true;
-        } elseif (!isset($args[0])) {
-            $this->mapTypeControl = null;
-
-            if (isset($this->mapOptions['mapTypeControl'])) {
-                unset($this->mapOptions['mapTypeControl']);
-            }
-        } else {
-            throw MapException::invalidMapTypeControl();
+        if ($overlays->getMap() !== $this) {
+            $overlays->setMap($this);
         }
     }
 
     /**
-     * Checks if the map has an overview map control.
+     * Gets the map layers.
      *
-     * @return boolean TRUE if the map has an overview map control else FALSE.
+     * @return \Ivory\GoogleMap\Layers\Layers The map layers.
      */
-    public function hasOverviewMapControl()
+    public function getLayers()
     {
-        return $this->overviewMapControl !== null;
+        return $this->layers;
     }
 
     /**
-     * Gets the overview map control.
+     * Sets the map layers.
      *
-     * @return \Ivory\GoogleMap\Controls\OverviewMapControl The overview map control.
+     * @param \Ivory\GoogleMap\Layers\Layers $layers The map layers.
      */
-    public function getOverviewMapControl()
+    public function setLayers(Layers $layers)
     {
-        return $this->overviewMapControl;
+        $this->layers = $layers;
     }
 
     /**
-     * Sets the overview map control.
+     * Gets the map events.
      *
-     * Available prototypes:
-     *  - function setOverviewMapControl(Ivory\GoogleMap\Controls\OverviewMapControl $overviewMapControl = null)
-     *  - function setOverviewMapControl(boolean $opened)
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the overview map control is not valid (prototypes).
+     * @return \Ivory\GoogleMap\Events\Events The map events.
      */
-    public function setOverviewMapControl()
+    public function getEvents()
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0]) instanceof OverviewMapControl) {
-            $this->overviewMapControl = $args[0];
-            $this->mapOptions['overviewMapControl'] = true;
-        } elseif (isset($args[0]) && is_bool($args[0])) {
-            if ($this->overviewMapControl === null) {
-                $this->overviewMapControl = new OverviewMapControl();
-            }
-
-            $this->overviewMapControl->setOpened($args[0]);
-            $this->mapOptions['overviewMapControl'] = true;
-        } elseif (!isset($args[0])) {
-            $this->overviewMapControl = null;
-
-            if (isset($this->mapOptions['overviewMapControl'])) {
-                unset($this->mapOptions['overviewMapControl']);
-            }
-        } else {
-            throw MapException::invalidOverviewMapControl();
-        }
+        return $this->events;
     }
 
     /**
-     * Checks if the map has a pan control.
+     * Sets the map events.
      *
-     * @return boolean TRUE if the map has a pan control else FALSE.
+     * @param \Ivory\GoogleMap\Events\Events $events The map events.
      */
-    public function hasPanControl()
+    public function setEvents(Events $events)
     {
-        return $this->panControl !== null;
-    }
-
-    /**
-     * Gets the map pan control.
-     *
-     * @return \Ivory\GoogleMap\Controls\PanControl The map pan control.
-     */
-    public function getPanControl()
-    {
-        return $this->panControl;
-    }
-
-    /**
-     * Sets the map pan control.
-     *
-     * Available prototypes:
-     *  - function setPanControl(Ivory\GoogleMap\Controls\PanControl $panControl = null)
-     *  - function setPanControl(string $controlPosition)
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the pan control is not valid (prototypes).
-     */
-    public function setPanControl()
-    {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof PanControl)) {
-            $this->panControl = $args[0];
-            $this->mapOptions['panControl'] = true;
-        } elseif (isset($args[0]) && is_string($args[0])) {
-            if ($this->panControl === null) {
-                $this->panControl = new PanControl();
-            }
-
-            $this->panControl->setControlPosition($args[0]);
-            $this->mapOptions['panControl'] = true;
-        } elseif (!isset($args[0])) {
-            $this->panControl = null;
-
-            if (isset($this->mapOptions['panControl'])) {
-                unset($this->mapOptions['panControl']);
-            }
-        } else {
-            throw MapException::invalidPanControl();
-        }
-    }
-
-    /**
-     * Checks if the map has a rotate control.
-     *
-     * @return boolean TRUE if the map has a rotate control else FALSE.
-     */
-    public function hasRotateControl()
-    {
-        return $this->rotateControl !== null;
-    }
-
-    /**
-     * Gets the map rotate control.
-     *
-     * @return \Ivory\GoogleMap\Controls\RotateControl The map rotate control.
-     */
-    public function getRotateControl()
-    {
-        return $this->rotateControl;
-    }
-
-    /**
-     * Sets the map rotate control.
-     *
-     * Available prototypes:
-     *  - function setRotateControl(Ivory\GoogleMap\Controls\RotateControl $rotateControl = null)
-     *  - function setRotateControl(string $controlPosition)
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the rotate control is not valid (prototypes).
-     */
-    public function setRotateControl()
-    {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof RotateControl)) {
-            $this->rotateControl = $args[0];
-            $this->mapOptions['rotateControl'] = true;
-        } elseif (isset($args[0]) && is_string($args[0])) {
-            if ($this->rotateControl === null) {
-                $this->rotateControl = new RotateControl();
-            }
-
-            $this->rotateControl->setControlPosition($args[0]);
-            $this->mapOptions['rotateControl'] = true;
-        } elseif (!isset($args[0])) {
-            $this->rotateControl = null;
-
-            if (isset($this->mapOptions['rotateControl'])) {
-                unset($this->mapOptions['rotateControl']);
-            }
-        } else {
-            throw MapException::invalidRotateControl();
-        }
-    }
-
-    /**
-     * Checks if the map has a scale control else FALSE.
-     *
-     * @return boolean TRUE if the map has a scale control else FALSE.
-     */
-    public function hasScaleControl()
-    {
-        return $this->scaleControl !== null;
-    }
-
-    /**
-     * Gets the map scale control.
-     *
-     * @return \Ivory\GoogleMap\Controls\ScaleControl The map scale control.
-     */
-    public function getScaleControl()
-    {
-        return $this->scaleControl;
-    }
-
-    /**
-     * Sets the map scale control.
-     *
-     * Available prototypes:
-     *  - function setScaleControl(Ivory\GoogleMap\Controls\ScaleControl $scaleControl = null)
-     *  - function setScaleControl(string $controlPosition, string $scaleControlStyle)
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the scale control is not valid (prototypes).
-     */
-    public function setScaleControl()
-    {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof ScaleControl)) {
-            $this->scaleControl = $args[0];
-            $this->mapOptions['scaleControl'] = true;
-        } elseif ((isset($args[0]) && is_string($args[0])) && (isset($args[1]) && is_string($args[1]))) {
-            if ($this->scaleControl === null) {
-                $this->scaleControl = new ScaleControl();
-            }
-
-            $this->scaleControl->setControlPosition($args[0]);
-            $this->scaleControl->setScaleControlStyle($args[1]);
-
-            $this->mapOptions['scaleControl'] = true;
-        } elseif (!isset($args[0])) {
-            $this->scaleControl = null;
-
-            if (isset($this->mapOptions['scaleControl'])) {
-                unset($this->mapOptions['scaleControl']);
-            }
-        } else {
-            throw MapException::invalidScaleControl();
-        }
-    }
-
-    /**
-     * Checks if the map has a street view control.
-     *
-     * @return boolean TRUE if the map has a street view control else FALSE.
-     */
-    public function hasStreetViewControl()
-    {
-        return $this->streetViewControl !== null;
-    }
-
-    /**
-     * Gets the map street view control.
-     *
-     * @return \Ivory\GoogleMap\Controls\StreetViewControl The map street view control.
-     */
-    public function getStreetViewControl()
-    {
-        return $this->streetViewControl;
-    }
-
-    /**
-     * Sets the map street view control.
-     *
-     * Available prototypes:
-     *  - function setStreetViewControl(Ivory\GoogleMap\Controls\StreetViewControl $streetViewControl = null)
-     *  - function setStreetViewControl(string $controlPosition)
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the street view control is not valid (prototypes).
-     */
-    public function setStreetViewControl()
-    {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof StreetViewControl)) {
-            $this->streetViewControl = $args[0];
-            $this->mapOptions['streetViewControl'] = true;
-        } elseif (isset($args[0]) && is_string($args[0])) {
-            if ($this->streetViewControl === null) {
-                $this->streetViewControl = new StreetViewControl();
-            }
-
-            $this->streetViewControl->setControlPosition($args[0]);
-            $this->mapOptions['streetViewControl'] = true;
-        } elseif (!isset($args[0])) {
-            $this->streetViewControl = null;
-
-            if (isset($this->mapOptions['streetViewControl'])) {
-                unset($this->mapOptions['streetViewControl']);
-            }
-        } else {
-            throw MapException::invalidStreetViewControl();
-        }
-    }
-
-    /**
-     * Checks if the map has a zoom control.
-     *
-     * @return boolean TRUE if the map has a zoom control else FALSE.
-     */
-    public function hasZoomControl()
-    {
-        return $this->zoomControl !== null;
-    }
-
-    /**
-     * Gets the map zoom control.
-     *
-     * @return \Ivory\GoogleMap\Controls\ZoomControl The map zoom control.
-     */
-    public function getZoomControl()
-    {
-        return $this->zoomControl;
-    }
-
-    /**
-     * Sets the map zoom control.
-     *
-     * Available prototypes:
-     *  - function setZoomControl(Ivory\GoogleMap\Controls\ZoomControl $zoomControl = null)
-     *  - function setZoomControl(string $controlPosition, string $zoomControlStyle)
-     *
-     * @throws \Ivory\GoogleMap\Exception\MapException If the zoom control is not valid (prototypes).
-     */
-    public function setZoomControl()
-    {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof ZoomControl)) {
-            $this->zoomControl = $args[0];
-            $this->mapOptions['zoomControl'] = true;
-        } elseif ((isset($args[0]) && is_string($args[0])) && (isset($args[1]) && is_string($args[1]))) {
-            if ($this->zoomControl === null) {
-                $this->zoomControl = new ZoomControl();
-            }
-
-            $this->zoomControl->setControlPosition($args[0]);
-            $this->zoomControl->setZoomControlStyle($args[1]);
-
-            $this->mapOptions['zoomControl'] = true;
-        } elseif (!isset($args[0])) {
-            $this->zoomControl = null;
-
-            if (isset($this->mapOptions['zoomControl'])) {
-                unset($this->mapOptions['zoomControl']);
-            }
-        } else {
-            throw MapException::invalidZoomControl();
-        }
-    }
-
-    /**
-     * Gets the map event manager.
-     *
-     * @return \Ivory\GoogleMap\Events\EventManager The map event manager.
-     */
-    public function getEventManager()
-    {
-        return $this->eventManager;
-    }
-
-    /**
-     * Sets the map event manager.
-     *
-     * @param \Ivory\GoogleMap\Events\EventManager $eventManager The map event manager.
-     */
-    public function setEventManager(EventManager $eventManager)
-    {
-        $this->eventManager = $eventManager;
-    }
-
-    /**
-     * Gets the marker cluster.
-     *
-     * @return \Ivory\GoogleMap\Overlays\MarkerCluster The marker cluster.
-     */
-    public function getMarkerCluster()
-    {
-        return $this->markerCluster;
-    }
-
-    /**
-     * Sets the marker cluster.
-     *
-     * @param \Ivory\GoogleMap\Overlays\MarkerCluster $markerCluster The marker cluster.
-     */
-    public function setMarkerCluster(MarkerCluster $markerCluster)
-    {
-        $this->markerCluster = $markerCluster;
-    }
-
-    /**
-     * Gets the map markers.
-     *
-     * @return array The map markers.
-     */
-    public function getMarkers()
-    {
-        return $this->markerCluster->getMarkers();
-    }
-
-    /**
-     * Add a map marker.
-     *
-     * @param \Ivory\GoogleMap\Overlays\Marker $marker The marker to add.
-     */
-    public function addMarker(Marker $marker)
-    {
-        $this->markerCluster->addMarker($marker);
-
-        if ($this->autoZoom) {
-            $this->bound->extend($marker);
-        }
-    }
-
-    /**
-     * Gets the map info windows.
-     *
-     * @return array The map info windows.
-     */
-    public function getInfoWindows()
-    {
-        return $this->infoWindows;
-    }
-
-    /**
-     * Add a map info window.
-     *
-     * @param \Ivory\GoogleMap\Overlays\InfoWindow $infoWindow The info window to add.
-     */
-    public function addInfoWindow(InfoWindow $infoWindow)
-    {
-        $this->infoWindows[] = $infoWindow;
-
-        if ($this->autoZoom) {
-            $this->bound->extend($infoWindow);
-        }
-    }
-
-    /**
-     * Gets the map polylines.
-     *
-     * @return array The map polylines.
-     */
-    public function getPolylines()
-    {
-        return $this->polylines;
-    }
-
-    /**
-     * Add a map polyline.
-     *
-     * @param \Ivory\GoogleMap\Overlays\Polyline The polyline to add.
-     */
-    public function addPolyline(Polyline $polyline)
-    {
-        $this->polylines[] = $polyline;
-
-        if ($this->autoZoom) {
-            $this->bound->extend($polyline);
-        }
-    }
-
-    /**
-     * Gets the map encoded polylines.
-     *
-     * @return array The map encoded polylines.
-     */
-    public function getEncodedPolylines()
-    {
-        return $this->encodedPolylines;
-    }
-
-    /**
-     * Adds an encoded polyline to the map.
-     *
-     * @param \Ivory\GoogleMap\Overlays\EncodedPolyline $encodedPolyline The encoded polyline to add.
-     */
-    public function addEncodedPolyline(EncodedPolyline $encodedPolyline)
-    {
-        $this->encodedPolylines[] = $encodedPolyline;
-
-        if ($this->autoZoom) {
-            $this->bound->extend($encodedPolyline);
-        }
-    }
-
-    /**
-     * Gets the map polygons.
-     *
-     * @return array The map polygons.
-     */
-    public function getPolygons()
-    {
-        return $this->polygons;
-    }
-
-    /**
-     * Add a map polygon.
-     *
-     * @param \Ivory\GoogleMap\Overlays\Polygon $polygon The polygon to add.
-     */
-    public function addPolygon(Polygon $polygon)
-    {
-        $this->polygons[] = $polygon;
-
-        if ($this->autoZoom) {
-            $this->bound->extend($polygon);
-        }
-    }
-
-    /**
-     * Gets the map rectangles.
-     *
-     * @return array The map rectangles.
-     */
-    public function getRectangles()
-    {
-        return $this->rectangles;
-    }
-
-    /**
-     * Add a map rectangle to the map.
-     *
-     * @param \Ivory\GoogleMap\Overlays\Rectangle $rectangle The rectangle to add.
-     */
-    public function addRectangle(Rectangle $rectangle)
-    {
-        $this->rectangles[] = $rectangle;
-
-        if ($this->autoZoom) {
-            $this->bound->extend($rectangle);
-        }
-    }
-
-    /**
-     * Gets the map circles
-     *
-     * @return array The map circles.
-     */
-    public function getCircles()
-    {
-        return $this->circles;
-    }
-
-    /**
-     * Add a circle to the map.
-     *
-     * @param \Ivory\GoogleMap\Overlays\Circle $circle The circle to add.
-     */
-    public function addCircle(Circle $circle)
-    {
-        $this->circles[] = $circle;
-
-        if ($this->autoZoom) {
-            $this->bound->extend($circle);
-        }
-    }
-
-    /**
-     * Gets the map ground overlays.
-     *
-     * @return array The map ground overlays.
-     */
-    public function getGroundOverlays()
-    {
-        return $this->groundOverlays;
-    }
-
-    /**
-     * Add a ground overlay to the map.
-     *
-     * @param \Ivory\GoogleMapBundle\Model\Overlays\GroupOverlay $groundOverlay The ground overlay to add.
-     */
-    public function addGroundOverlay(GroundOverlay $groundOverlay)
-    {
-        $this->groundOverlays[] = $groundOverlay;
-
-        if ($this->autoZoom) {
-            $this->bound->extend($groundOverlay);
-        }
-    }
-
-    /**
-     * Gets the KML layers.
-     *
-     * @return array The KML layers.
-     */
-    public function getKMLLayers()
-    {
-        return $this->kmlLayers;
-    }
-
-    /**
-     * Adds a KML Layer to the map.
-     *
-     * @param \Ivory\GoogleMap\Layers\KMLLayer $kmlLayer The KML Layer to add.
-     */
-    public function addKMLLayer(KMLLayer $kmlLayer)
-    {
-        $this->kmlLayers[] = $kmlLayer;
+        $this->events = $events;
     }
 
     /**

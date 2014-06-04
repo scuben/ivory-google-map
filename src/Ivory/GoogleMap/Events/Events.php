@@ -12,12 +12,12 @@
 namespace Ivory\GoogleMap\Events;
 
 /**
- * Event manager which manages the google map event.
+ * Events which manages the google map event.
  *
  * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#MapsEventListener
  * @author GeLo <geloen.eric@gmail.com>
  */
-class EventManager
+class Events
 {
     /** @var array */
     protected $domEvents;
@@ -32,9 +32,9 @@ class EventManager
     protected $eventsOnce;
 
     /**
-     * Creates an event manager.
+     * Creates an events.
      *
-     * @param array $domEvents     The dom events.Z
+     * @param array $domEvents     The dom events.
      * @param array $domEventsOnce The dom events which are triggered only one time.
      * @param array $events        The events.
      * @param array $eventsOnce    The events which are triggered only one time.

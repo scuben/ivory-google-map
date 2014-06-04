@@ -26,8 +26,8 @@ abstract class AbstractOptionsAsset extends AbstractJavascriptVariableAsset
     /**
      * Creates an options asset.
      *
-     * @param string $javascriptVariable The javascript variable.
-     * @param array  $options            The options.
+     * @param string|null $javascriptVariable The javascript variable.
+     * @param array       $options            The options.
      */
     public function __construct($javascriptVariable = null, array $options = array())
     {
@@ -37,9 +37,9 @@ abstract class AbstractOptionsAsset extends AbstractJavascriptVariableAsset
     }
 
     /**
-     * Checks if there is option.
+     * Checks if there are options.
      *
-     * @return boolean TRUE if there is option else FALSE.
+     * @return boolean TRUE if there are options else FALSE.
      */
     public function hasOptions()
     {

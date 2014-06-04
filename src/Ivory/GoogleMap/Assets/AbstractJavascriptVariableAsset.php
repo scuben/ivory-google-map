@@ -14,7 +14,7 @@ namespace Ivory\GoogleMap\Assets;
 use Ivory\GoogleMap\Exception\AssetException;
 
 /**
- * Allow easy generation of unique javascript variable for any class model that requires it.
+ * Allow easy generation of unique javascript variable.
  *
  * @author GeLo <geloen.eric@gmail.com>
  */
@@ -25,6 +25,8 @@ abstract class AbstractJavascriptVariableAsset
 
     /**
      * Creates a javascript variable asset.
+     *
+     * @param string|null $javascriptVariable The javascript variable.
      */
     public function __construct($javascriptVariable = null)
     {
@@ -80,7 +82,7 @@ abstract class AbstractJavascriptVariableAsset
     /**
      * Generates a unique javascript variable which can be prefixed.
      *
-     * @param string $prefix The prefix.
+     * @param string|null $prefix The prefix.
      *
      * @return string The unique javascript variable.
      */

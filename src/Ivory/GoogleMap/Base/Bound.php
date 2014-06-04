@@ -34,6 +34,10 @@ class Bound extends AbstractJavascriptVariableAsset
 
     /**
      * Creates a bound.
+     *
+     * @param \Ivory\GoogleMap\Base\Coordinate|null $southWest The south west coordinate.
+     * @param \Ivory\GoogleMap\Base\Coordinate|null $northEast The north east coordinate.
+     * @param array                                 $extends   The extended overlays.
      */
     public function __construct(Coordinate $southWest = null, Coordinate $northEast = null, array $extends = array())
     {
@@ -191,9 +195,9 @@ class Bound extends AbstractJavascriptVariableAsset
      */
     public function getCenter()
     {
-        $centerLatitude = ($this->getSouthWest()->getLatitude() + $this->getNorthEast()->getLatitude()) / 2;
-        $centerLongitude = ($this->getSouthWest()->getLongitude() + $this->getNorthEast()->getLongitude()) / 2;
-
-        return new Coordinate($centerLatitude, $centerLongitude);
+        return new Coordinate(
+            ($this->southWest->getLatitude() + $this->northEast->getLatitude()) / 2,
+            ($this->southWest->getLongitude() + $this->northEast->getLongitude()) / 2
+        );
     }
 }

@@ -129,7 +129,7 @@ class MapTypeControl
     /**
      * Sets the map type control style.
      *
-     * @param type $mapTypeControlStyle The map type control style.
+     * @param string $mapTypeControlStyle The map type control style.
      *
      * @throws \Ivory\GoogleMap\Exception\ControlException If the map type control style is not valid.
      */
