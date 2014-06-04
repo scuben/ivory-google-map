@@ -148,7 +148,7 @@ class MarkerImage extends AbstractJavascriptVariableAsset
     /**
      * Sets the origin of the marker image.
      *
-     * @param \Ivory\GoogleMap\Base\Point $origin The origin.
+     * @param \Ivory\GoogleMap\Base\Point|null $origin The origin.
      */
     public function setOrigin(Point $origin = null)
     {
