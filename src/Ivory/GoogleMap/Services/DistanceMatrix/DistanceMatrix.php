@@ -38,27 +38,14 @@ class DistanceMatrix extends AbstractService
     /**
      * Processes the given request.
      *
-     * Available prototypes:
-     * - function process(array $origins, array $destinations)
-     * - function process(Ivory\GoogleMap\Services\DistanceMatrix\DistanceMatrixRequest $request)
+     * @param \Ivory\GoogleMap\Services\DistanceMatrix\DistanceMatrixRequest $distanceMatrixRequest The request.
      *
-     * @throws \Ivory\GoogleMap\Exception\DistanceMatrixException If the request is not valid (prototypes).
+     * @return \Ivory\GoogleMap\Services\DistanceMatrix\DistanceMatrixResponse The response.
+     *
+     * @throws \Ivory\GoogleMap\Exception\DistanceMatrixException If the request is invalid.
      */
-    public function process()
+    public function process(DistanceMatrixRequest $distanceMatrixRequest)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof DistanceMatrixRequest)) {
-            $distanceMatrixRequest = $args[0];
-        } elseif ((isset($args[0]) && is_array($args[0])) && (isset($args[1]) && is_array($args[1]))) {
-            $distanceMatrixRequest = new DistanceMatrixRequest();
-
-            $distanceMatrixRequest->setOrigins($args[0]);
-            $distanceMatrixRequest->setDestinations($args[1]);
-        } else {
-            throw DistanceMatrixException::invalidDistanceMatrixRequestParameters();
-        }
-
         if (!$distanceMatrixRequest->isValid()) {
             throw DistanceMatrixException::invalidDistanceMatrixRequest();
         }

@@ -40,27 +40,15 @@ class Directions extends AbstractService
     /**
      * Routes the given request.
      *
-     * Available prototypes:
-     * - function route(string $origin, string $destination)
-     * - function route(Ivory\GoogleMap\Services\Directions\DirectionsRequest $request)
+     * @param \Ivory\GoogleMap\Services\Directions\DirectionsRequest $directionsRequest The directions request.
+     *
+     * @return \Ivory\GoogleMap\Services\Directions\DirectionsResponse The directions response.
      *
      * @throws \Ivory\GoogleMap\Exception\DirectionsException If the request is not valid (prototypes).
      */
-    public function route()
+    public function route(DirectionsRequest $directionsRequest)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof DirectionsRequest)) {
-            $directionsRequest = $args[0];
-        } elseif ((isset($args[0]) && is_string($args[0])) && (isset($args[1]) && is_string($args[1]))) {
-            $directionsRequest = new DirectionsRequest();
-
-            $directionsRequest->setOrigin($args[0]);
-            $directionsRequest->setDestination($args[1]);
-        } else {
-            throw DirectionsException::invalidDirectionsRequestParameters();
-        }
-
+        // FIXME TEST -> faire des mocks à la place de new
         if (!$directionsRequest->isValid()) {
             throw DirectionsException::invalidDirectionsRequest();
         }

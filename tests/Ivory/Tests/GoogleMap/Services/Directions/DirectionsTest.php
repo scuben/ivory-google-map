@@ -11,7 +11,6 @@
 
 namespace Ivory\Tests\GoogleMap\Services\Directions;
 
-use \DateTime;
 use Ivory\GoogleMap\Services\Directions\Directions;
 use Ivory\GoogleMap\Services\Directions\DirectionsRequest;
 use Ivory\GoogleMap\Services\Directions\DirectionsStatus;
@@ -25,7 +24,7 @@ use Widop\HttpAdapter\CurlHttpAdapter;
  *
  * @author GeLo <geloen.eric@gmail.com>
  */
-class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
+class DirectionsTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Ivory\GoogleMap\Services\Directions\Directions */
     protected $directions;
@@ -48,19 +47,9 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
         unset($this->directions);
     }
 
-    public function testRouteWithOriginAndDestination()
-    {
-        $response = $this->directions->route('Lille', 'Paris');
-
-        $this->assertSame(DirectionsStatus::OK, $response->getStatus());
-        $this->assertNotEmpty($response->getRoutes());
-    }
-
     public function testRouteWithDirectionsRequest()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin(50.629381, 3.057268);
-        $request->setDestination(48.856633, 2.352254);
+        $request = new DirectionsRequest('50.629381, 3.057268', '48.856633, 2.352254');
         $request->setTravelMode(TravelMode::DRIVING);
         $request->setProvideRouteAlternatives(true);
         $request->setUnitSystem(UnitSystem::METRIC);
@@ -74,10 +63,8 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteWithDirectionsRequestAndStringWaypointAndOptimizeWaypoint()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin('Lille');
-        $request->addWaypoint('Compiègne');
-        $request->setDestination('Paris');
+        $request = new DirectionsRequest('Lille', 'Paris');
+        $request->addWaypoint(new DirectionsWaypoint('Compiègne'));
 
         $request->setOptimizeWaypoints(true);
 
@@ -89,10 +76,8 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteWithDirectionsRequestAndCoordinateWaypoint()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin('Lille');
-        $request->addWaypoint(49.418079, 2.826190);
-        $request->setDestination('Paris');
+        $request = new DirectionsRequest('Lille', 'Paris');
+        $request->addWaypoint(new DirectionsWaypoint('49.418079, 2.826190'));
 
         $request->setOptimizeWaypoints(true);
 
@@ -121,9 +106,7 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteWithDirectionsRequestAndAvoidTolls()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin('Lille');
-        $request->setDestination('Paris');
+        $request = new DirectionsRequest('Lille', 'Paris');
         $request->setAvoidTolls(true);
 
         $response = $this->directions->route($request);
@@ -134,9 +117,7 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteWithDirectionsRequestAndAvoidHighways()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin('Lille');
-        $request->setDestination('Paris');
+        $request = new DirectionsRequest('Lille', 'Paris');
         $request->setAvoidHighways(true);
 
         $response = $this->directions->route($request);
@@ -147,9 +128,7 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteWithDirectionsRequestAndLanguage()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin('Lille');
-        $request->setDestination('Paris');
+        $request = new DirectionsRequest('Lille', 'Paris');
         $request->setLanguage('fr');
 
         $response = $this->directions->route($request);
@@ -160,12 +139,10 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteWithDirectionsRequestAndTransitModeAndDepartureTime()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin('601-625 Ashbury Street, San Francisco');
-        $request->setDestination('Bike Route 95, San Francisco');
+        $request = new DirectionsRequest('601-625 Ashbury Street, San Francisco', 'Bike Route 95, San Francisco');
 
         $request->setTravelMode(TravelMode::TRANSIT);
-        $request->setDepartureTime(new DateTime());
+        $request->setDepartureTime(new \DateTime());
 
         $response = $this->directions->route($request);
 
@@ -175,12 +152,10 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteWithDirectionsRequestAndTransitModeAndArrivalTime()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin('601-625 Ashbury Street, San Francisco');
-        $request->setDestination('Bike Route 95, San Francisco');
+        $request = new DirectionsRequest('601-625 Ashbury Street, San Francisco', 'Bike Route 95, San Francisco');
 
         $request->setTravelMode(TravelMode::TRANSIT);
-        $request->setArrivalTime(new DateTime('+2 hours'));
+        $request->setArrivalTime(new \DateTime('+2 hours'));
 
         $response = $this->directions->route($request);
 
@@ -190,13 +165,11 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteWithDirectionsRequestAndTransitModeAndDepartureTimeAndArrivalTime()
     {
-        $request = new DirectionsRequest();
-        $request->setOrigin('601-625 Ashbury Street, San Francisco');
-        $request->setDestination('Bike Route 95, San Francisco');
+        $request = new DirectionsRequest('601-625 Ashbury Street, San Francisco', 'Bike Route 95, San Francisco');
 
         $request->setTravelMode(TravelMode::TRANSIT);
-        $request->setArrivalTime(new DateTime());
-        $request->setArrivalTime(new DateTime('+2 hours'));
+        $request->setArrivalTime(new \DateTime());
+        $request->setArrivalTime(new \DateTime('+2 hours'));
 
         $response = $this->directions->route($request);
 
@@ -207,7 +180,7 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
     public function testRouteWithXmlFormat()
     {
         $this->directions->setFormat('xml');
-        $response = $this->directions->route('Lille', 'Paris');
+        $response = $this->directions->route(new DirectionsRequest('Lille', 'Paris'));
 
         $this->assertSame(DirectionsStatus::OK, $response->getStatus());
         $this->assertNotEmpty($response->getRoutes());
@@ -247,24 +220,12 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Ivory\GoogleMap\Exception\DirectionsException
-     * @expectedExceptionMessage The route arguments are invalid.
-     * The available prototypes are:
-     * - function route(string $origin, string $destination)
-     * - function route(Ivory\GoogleMap\Services\Directions\DirectionsRequest $request)
-     */
-    public function testRouteWithInvalidRequestParameters()
-    {
-        $this->directions->route(true);
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\DirectionsException
      * @expectedExceptionMessage The directions request is not valid. It needs at least an origin and a destination.
      * If you add waypoint to the directions request, it needs at least a location.
      */
     public function testRouteWithInvalidRequest()
     {
-        $this->directions->route(new DirectionsRequest());
+        $this->directions->route(new DirectionsRequest('', ''));
     }
 
     /**
@@ -280,6 +241,6 @@ class DirectionsServiceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(null));
 
         $this->directions = new Directions($httpAdapterMock);
-        $this->directions->route('Lille', 'Paris');
+        $this->directions->route(new DirectionsRequest('Lille', 'Paris'));
     }
 }

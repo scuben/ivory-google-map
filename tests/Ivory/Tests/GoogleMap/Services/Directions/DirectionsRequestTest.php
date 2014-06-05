@@ -31,7 +31,7 @@ class DirectionsRequestTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->directionsRequest = new DirectionsRequest();
+        $this->directionsRequest = new DirectionsRequest('', '');
     }
 
     /**
@@ -117,35 +117,13 @@ class DirectionsRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->directionsRequest->getDestination(), 'foo');
     }
 
-    public function testDestinationWithCoordinate()
+    public function testDestination()
     {
         $location = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
 
         $this->directionsRequest->setDestination($location);
 
         $this->assertSame($location, $this->directionsRequest->getDestination());
-    }
-
-    public function testDestinationWithLatitudeAndLongitude()
-    {
-        $this->directionsRequest->setDestination(1.1, 2.1, false);
-
-        $this->assertSame(1.1, $this->directionsRequest->getDestination()->getLatitude());
-        $this->assertSame(2.1, $this->directionsRequest->getDestination()->getLongitude());
-        $this->assertFalse($this->directionsRequest->getDestination()->isNoWrap());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\DirectionsException
-     * @expectedExceptionMessage The destination setter arguments are invalid.
-     * The available prototypes are :
-     * - function setDestination(string $destination)
-     * - function setDestination(Ivory\GoogleMap\Base\Coordinate $destination)
-     * - function setDestination(double $latitude, double $longitude, boolean $noWrap)
-     */
-    public function testDestinationWithInvalidValue()
-    {
-        $this->directionsRequest->setDestination(true);
     }
 
     public function testOptimizeWaypointsWithValidValue()
@@ -173,42 +151,12 @@ class DirectionsRequestTest extends \PHPUnit_Framework_TestCase
         $this->directionsRequest->setOptimizeWaypoints('foo');
     }
 
-    public function testOriginWithString()
-    {
-        $this->directionsRequest->setOrigin('foo');
-
-        $this->assertTrue($this->directionsRequest->hasOrigin());
-        $this->assertSame('foo', $this->directionsRequest->getOrigin());
-    }
-
-    public function testOriginWithCoordinate()
+    public function testOrigin()
     {
         $origin = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
         $this->directionsRequest->setOrigin($origin);
 
         $this->assertSame($origin, $this->directionsRequest->getOrigin());
-    }
-
-    public function testOriginWithLatitudeAndLongitude()
-    {
-        $this->directionsRequest->setOrigin(1.1, 2.1, false);
-
-        $this->assertSame(1.1, $this->directionsRequest->getOrigin()->getLatitude());
-        $this->assertSame(2.1, $this->directionsRequest->getOrigin()->getLongitude());
-        $this->assertFalse($this->directionsRequest->getOrigin()->isNoWrap());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\DirectionsException
-     * @expectedExceptionMessage The origin setter arguments are invalid.
-     * The available prototypes are :
-     * - function setOrigin(string $destination)
-     * - function setOrigin(Ivory\GoogleMap\Base\Coordinate $destination)
-     * - function setOrigin(double $latitude, double $longitude, boolean $noWrap)
-     */
-    public function testOriginWithInvalidValue()
-    {
-        $this->directionsRequest->setOrigin(true);
     }
 
     public function testDepartureTimeWithValidValue()
@@ -370,50 +318,13 @@ class DirectionsRequestTest extends \PHPUnit_Framework_TestCase
         $this->directionsRequest->setUnitSystem('foo');
     }
 
-    public function testWaypointWithWaypoint()
+    public function testWaypoint()
     {
-        $waypoint = $this->getMock('Ivory\GoogleMap\Services\Directions\DirectionsWaypoint');
+        $waypoint = $this->getMock('Ivory\GoogleMap\Services\Directions\DirectionsWaypoint', array(), array(), '', false);
         $this->directionsRequest->setWaypoints(array($waypoint));
 
         $this->assertTrue($this->directionsRequest->hasWaypoints());
         $this->assertSame(array($waypoint), $this->directionsRequest->getWaypoints());
-    }
-
-    public function testWaypointWithCoordinate()
-    {
-        $coordinate = $this->getMock('Ivory\GoogleMap\Base\Coordinate');
-        $this->directionsRequest->setWaypoints(array($coordinate));
-
-        $waypoints = $this->directionsRequest->getWaypoints();
-
-        $this->assertArrayHasKey(0, $waypoints);
-        $this->assertSame($coordinate, $waypoints[0]->getLocation());
-    }
-
-    public function testWaypointWithLatitudeAndLongitude()
-    {
-        $this->directionsRequest->addWaypoint(1.1, 2.2, false);
-
-        $waypoints = $this->directionsRequest->getWaypoints();
-
-        $this->assertArrayHasKey(0, $waypoints);
-        $this->assertSame(1.1, $waypoints[0]->getLocation()->getLatitude());
-        $this->assertSame(2.2, $waypoints[0]->getLocation()->getLongitude());
-        $this->assertFalse($waypoints[0]->getLocation()->isNoWrap());
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\DirectionsException
-     * @expectedExceptionMessage The waypoint adder arguments are invalid.
-     * The available prototypes are :
-     * - function addWaypoint(Ivory\GoogleMap\Services\Directions\DirectionsWaypoint $waypoint)
-     * - function addWaypoint(string $location)
-     * - function addWaypoint(Ivory\GoogleMap\Base\Coordinate $location)
-     * - function addWaypoint(double $latitude, double $longitude, boolean $noWrap)
-     */
-    public function testWaypointWithInvalidValue()
-    {
-        $this->directionsRequest->addWaypoint(true);
     }
 
     public function testSensorWithValidValue()
@@ -461,7 +372,7 @@ class DirectionsRequestTest extends \PHPUnit_Framework_TestCase
 
     public function testIsValidWithValidWaypoint()
     {
-        $waypoint = $this->getMock('Ivory\GoogleMap\Services\Directions\DirectionsWaypoint');
+        $waypoint = $this->getMock('Ivory\GoogleMap\Services\Directions\DirectionsWaypoint', array(), array(), '', false);
         $waypoint
             ->expects($this->once())
             ->method('isValid')
@@ -476,7 +387,7 @@ class DirectionsRequestTest extends \PHPUnit_Framework_TestCase
 
     public function testIsValidWithInvalidWaypoint()
     {
-        $waypoint = $this->getMock('Ivory\GoogleMap\Services\Directions\DirectionsWaypoint');
+        $waypoint = $this->getMock('Ivory\GoogleMap\Services\Directions\DirectionsWaypoint', array(), array(), '', false);
         $waypoint
             ->expects($this->once())
             ->method('isValid')

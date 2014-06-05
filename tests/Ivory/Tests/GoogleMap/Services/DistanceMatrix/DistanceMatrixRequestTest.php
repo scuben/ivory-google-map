@@ -31,7 +31,7 @@ class DistanceMatrixRequestTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->distanceMatrixRequest = new DistanceMatrixRequest();
+        $this->distanceMatrixRequest = new DistanceMatrixRequest(array(), array());
     }
 
     /**
@@ -126,19 +126,6 @@ class DistanceMatrixRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($location, $destinations[0]);
     }
 
-    public function testDestinationWithLatitudeAndLongitude()
-    {
-        $this->distanceMatrixRequest->addDestination(1.1, 2.1, false);
-
-        $destinations = $this->distanceMatrixRequest->getDestinations();
-
-        $this->assertArrayHasKey(0, $destinations);
-        $this->assertCount(1, $destinations);
-        $this->assertSame(1.1, $destinations[0]->getLatitude());
-        $this->assertSame(2.1, $destinations[0]->getLongitude());
-        $this->assertFalse($destinations[0]->isNoWrap());
-    }
-
     /**
      * @expectedException \Ivory\GoogleMap\Exception\DistanceMatrixException
      * @expectedExceptionMessage The destination adder arguments are invalid.
@@ -169,19 +156,6 @@ class DistanceMatrixRequestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey(0, $origins);
         $this->assertSame($origin, $origins[0]);
-    }
-
-    public function testOriginWithLatitudeAndLongitude()
-    {
-        $this->distanceMatrixRequest->addOrigin(1.1, 2.1, false);
-
-        $origins = $this->distanceMatrixRequest->getOrigins();
-
-        $this->assertArrayHasKey(0, $origins);
-        $this->assertCount(1, $origins);
-        $this->assertSame(1.1, $origins[0]->getLatitude());
-        $this->assertSame(2.1, $origins[0]->getLongitude());
-        $this->assertFalse($origins[0]->isNoWrap());
     }
 
     /**

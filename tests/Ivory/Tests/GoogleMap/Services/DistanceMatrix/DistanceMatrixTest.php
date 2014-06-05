@@ -48,7 +48,7 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessWithOriginAndDestinationStrings()
     {
-        $response = $this->service->process(array('Vancouver BC'), array('San Francisco'));
+        $response = $this->service->process(new DistanceMatrixRequest(array('Vancouver BC'), array('San Francisco')));
 
         $this->assertSame(DistanceMatrixStatus::OK, $response->getStatus());
         $this->assertCount(1, $response->getOrigins());
@@ -67,7 +67,7 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
         $vancouver = new Coordinate(49.262428, -123.113136);
         $sanFrancisco = new Coordinate(37.775328, -122.418938);
 
-        $response = $this->service->process(array($vancouver), array($sanFrancisco));
+        $response = $this->service->process(new DistanceMatrixRequest(array($vancouver), array($sanFrancisco)));
 
         $this->assertSame(DistanceMatrixStatus::OK, $response->getStatus());
         $this->assertCount(1, $response->getOrigins());
@@ -83,9 +83,7 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessWithMinimalDistanceMatrixRequest()
     {
-        $request = new DistanceMatrixRequest();
-        $request->addOrigin('Vancouver BC');
-        $request->addDestination('San Francisco');
+        $request = new DistanceMatrixRequest(array('Vancouver BC'), array('San Francisco'));
 
         $response = $this->service->process($request);
         $this->assertCount(1, $response->getOrigins());
@@ -101,9 +99,7 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessWithDistanceMatrixRequest()
     {
-        $request = new DistanceMatrixRequest();
-        $request->addOrigin('Vancouver BC');
-        $request->addDestination('San Francisco');
+        $request = new DistanceMatrixRequest(array('Vancouver BC'), array('San Francisco'));
         $request->setTravelMode(TravelMode::BICYCLING);
         $request->setUnitSystem(UnitSystem::METRIC);
         $request->setRegion('en');
@@ -123,9 +119,7 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessWithDistanceMatrixRequestAndAvoidTolls()
     {
-        $request = new DistanceMatrixRequest();
-        $request->addOrigin('Vancouver BC');
-        $request->addDestination('San Francisco');
+        $request = new DistanceMatrixRequest(array('Vancouver BC'), array('San Francisco'));
         $request->setAvoidTolls(true);
 
         $response = $this->service->process($request);
@@ -142,9 +136,7 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessWithDistanceMatrixRequestAndAvoidHighways()
     {
-        $request = new DistanceMatrixRequest();
-        $request->addOrigin('Vancouver BC');
-        $request->addDestination('San Francisco');
+        $request = new DistanceMatrixRequest(array('Vancouver BC'), array('San Francisco'));
         $request->setAvoidHighways(true);
 
         $response = $this->service->process($request);
@@ -162,7 +154,7 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
     public function testProcessWithXmlFormat()
     {
         $this->service->setFormat('xml');
-        $response = $this->service->process(array('Vancouver BC'), array('San Francisco'));
+        $response = $this->service->process(new DistanceMatrixRequest(array('Vancouver BC'), array('San Francisco')));
 
         $this->assertSame(DistanceMatrixStatus::OK, $response->getStatus());
         $this->assertCount(1, $response->getOrigins());
@@ -210,23 +202,11 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Ivory\GoogleMap\Exception\DistanceMatrixException
-     * @expectedExceptionMessage The process arguments are invalid.
-     * The available prototypes are:
-     * - function route(array $origins, array $destinations)
-     * - function route(Ivory\GoogleMap\Services\DistanceMatrix\DistanceMatrixRequest $request)
-     */
-    public function testProcessWithInvalidRequestParameters()
-    {
-        $this->service->process(true);
-    }
-
-    /**
-     * @expectedException \Ivory\GoogleMap\Exception\DistanceMatrixException
      * @expectedExceptionMessage The directions request is not valid. It needs at least one origin and one destination.
      */
     public function testProcessWithInvalidRequest()
     {
-        $this->service->process(new DistanceMatrixRequest());
+        $this->service->process(new DistanceMatrixRequest(array(), array()));
     }
 
     /**
@@ -242,6 +222,6 @@ class DistanceMatrixTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(null));
 
         $this->service = new DistanceMatrix($httpAdapterMock);
-        $this->service->process(array('Vancouver BC'), array('San Francisco'));
+        $this->service->process(new DistanceMatrixRequest(array('Vancouver BC'), array('San Francisco')));
     }
 }

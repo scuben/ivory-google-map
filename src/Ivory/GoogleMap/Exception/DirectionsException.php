@@ -58,22 +58,6 @@ class DirectionsException extends ServiceException
     }
 
     /**
-     * Gets the "INVALID DIRECTIONS REQUEST PARAMETERS" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\DirectionsException The "INVALID DIRECTIONS REQUEST PARAMETERS" exception.
-     */
-    public static function invalidDirectionsRequestParameters()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The route arguments are invalid.',
-            'The available prototypes are:',
-            '- function route(string $origin, string $destination)',
-            '- function route(Ivory\GoogleMap\Services\Directions\DirectionsRequest $request)'
-        ));
-    }
-
-    /**
      * Gets the "INVALID DIRECTIONS REQUEST AVOID HIGHWAYS" exception.
      *
      * @return \Ivory\GoogleMap\Exception\DirectionsException The "INVALID DIRECTIONS REQUEST AVOID HIGHWAYS" exception.
@@ -202,24 +186,6 @@ class DirectionsException extends ServiceException
         return new static(sprintf(
             'The directions request unit system can only be : %s.',
             implode(', ', UnitSystem::getUnitSystems())
-        ));
-    }
-
-    /**
-     * Gets the "INVALID DIRECTIONS REQUEST WAYPOINT" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\DirectionsException The "INVALID DIRECTIONS REQUEST WAYPOINT" exception.
-     */
-    public static function invalidDirectionsRequestWaypoint()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The waypoint adder arguments are invalid.',
-            'The available prototypes are :',
-            ' - function addWaypoint(Ivory\GoogleMap\Services\Directions\DirectionsWaypoint $waypoint)',
-            ' - function addWaypoint(string $location)',
-            ' - function addWaypoint(Ivory\GoogleMap\Base\Coordinate $location)',
-            ' - function addWaypoint(double $latitude, double $longitude, boolean $noWrap)'
         ));
     }
 

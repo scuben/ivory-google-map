@@ -12,8 +12,11 @@
 namespace Ivory\Tests\GoogleMap\Services\Geocoding;
 
 use Geocoder\HttpAdapter\CurlHttpAdapter;
+use Ivory\GoogleMap\Base\Bound;
+use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Services\Geocoding\GeocoderProvider;
-use Ivory\GoogleMap\Services\Geocoding\GeocoderRequest;
+use Ivory\GoogleMap\Services\Geocoding\AddressGeocoderRequest;
+use Ivory\GoogleMap\Services\Geocoding\CoordinateGeocoderRequest;
 use Ivory\GoogleMap\Services\Geocoding\Result\GeocoderStatus;
 
 /**
@@ -52,7 +55,7 @@ class GeocoderProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->geocoderProvider->getBusinessAccount());
     }
 
-    public function testUrlWithValieValue()
+    public function testUrlWithValidValue()
     {
         $this->geocoderProvider->setUrl('http://foo');
 
@@ -142,7 +145,7 @@ class GeocoderProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGeocodedDataWithAddress()
     {
-        $response = $this->geocoderProvider->getGeocodedData('Paris');
+        $response = $this->geocoderProvider->getGeocodedData(new AddressGeocoderRequest('Paris'));
 
         $this->assertInstanceOf('Ivory\GoogleMap\Services\Geocoding\Result\GeocoderResponse', $response);
 
@@ -150,9 +153,9 @@ class GeocoderProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(GeocoderStatus::OK, $response->getStatus());
     }
 
-    public function testGeocdedDataWithIp()
+    public function testGeocodedDataWithIp()
     {
-        $response = $this->geocoderProvider->getGeocodedData('111.111.111.111');
+        $response = $this->geocoderProvider->getGeocodedData(new AddressGeocoderRequest('111.111.111.111'));
 
         $this->assertInstanceOf('Ivory\GoogleMap\Services\Geocoding\Result\GeocoderResponse', $response);
 
@@ -160,13 +163,25 @@ class GeocoderProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(GeocoderStatus::OK, $response->getStatus());
     }
 
-    public function testGeocodedDataWithGeocoderRequest()
+    public function testGeocodedDataWithAddressGeocoderRequest()
     {
-        $request = new GeocoderRequest();
-        $request->setAddress('Paris');
-        $request->setBound(48.815573, 2.224199, 48.9021449, 2.4699208);
+        $request = new AddressGeocoderRequest('Paris');
+        $request->setBound(new Bound(new Coordinate(48.815573, 2.224199), new Coordinate(48.9021449, 2.4699208)));
         $request->setRegion('FR');
         $request->setLanguage('PL');
+
+        $response = $this->geocoderProvider->getGeocodedData($request);
+
+        $this->assertInstanceOf('Ivory\GoogleMap\Services\Geocoding\Result\GeocoderResponse', $response);
+
+        $this->assertNotEmpty($response->getResults());
+        $this->assertSame(GeocoderStatus::OK, $response->getStatus());
+    }
+
+
+    public function testGeocodedDataWithCoordinateGeocoderRequest()
+    {
+        $request = new CoordinateGeocoderRequest(new Coordinate(48.815573, 2.224199));
 
         $response = $this->geocoderProvider->getGeocodedData($request);
 
@@ -179,7 +194,7 @@ class GeocoderProviderTest extends \PHPUnit_Framework_TestCase
     public function testGeocodedDataWithXmlFormat()
     {
         $this->geocoderProvider->setFormat('xml');
-        $response = $this->geocoderProvider->getGeocodedData('Paris');
+        $response = $this->geocoderProvider->getGeocodedData(new AddressGeocoderRequest('Paris'));
 
         $this->assertInstanceOf('Ivory\GoogleMap\Services\Geocoding\Result\GeocoderResponse', $response);
 
@@ -189,23 +204,24 @@ class GeocoderProviderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Ivory\GoogleMap\Exception\GeocodingException
-     * @expectedExceptionMessage The geolocate argument is invalid.
-     * The available prototypes are :
-     * - function geocode(string $address)
-     * - function geocode(Ivory\GoogleMap\Services\Geocoding\GeocoderRequest $request)
+     * @expectedExceptionMessage The geocoder request is not valid. It needs at least an address or a coordinate.
      */
-    public function testGeocodedDataWithInvalidValue()
+    public function testGeocodedDataWithInvalidAddressGeocoderRequest()
     {
-        $this->geocoderProvider->getGeocodedData(true);
+        $request = new AddressGeocoderRequest('');
+
+        $this->geocoderProvider->getGeocodedData($request);
     }
 
     /**
      * @expectedException \Ivory\GoogleMap\Exception\GeocodingException
      * @expectedExceptionMessage The geocoder request is not valid. It needs at least an address or a coordinate.
      */
-    public function testGeocodedDataWithInvalidGeocoderRequest()
+    public function testGeocodedDataWithInvalidCoordinateGeocoderRequest()
     {
-        $request = new GeocoderRequest();
+        $request = new CoordinateGeocoderRequest(new Coordinate());
+
+        $request->setCoordinate(null);
 
         $this->geocoderProvider->getGeocodedData($request);
     }
@@ -223,7 +239,7 @@ class GeocoderProviderTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(null));
 
         $this->geocoderProvider = new GeocoderProvider($httpAdapterMock);
-        $this->geocoderProvider->getGeocodedData('Paris');
+        $this->geocoderProvider->getGeocodedData(new AddressGeocoderRequest('Paris'));
     }
 
     public function testReversedData()

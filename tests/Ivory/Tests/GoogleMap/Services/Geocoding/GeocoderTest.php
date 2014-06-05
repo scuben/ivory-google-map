@@ -13,6 +13,7 @@ namespace Ivory\Tests\GoogleMap\Services\Geocoding;
 
 use Geocoder\HttpAdapter\CurlHttpAdapter;
 use Geocoder\Provider\GoogleMapsProvider;
+use Ivory\GoogleMap\Services\Geocoding\AddressGeocoderRequest;
 use Ivory\GoogleMap\Services\Geocoding\Geocoder;
 use Ivory\GoogleMap\Services\Geocoding\GeocoderProvider;
 
@@ -71,7 +72,7 @@ class GeocoderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Ivory\GoogleMap\Services\Geocoding\Result\GeocoderResponse',
-            $this->geocoder->geocode('Paris')
+            $this->geocoder->geocode(new AddressGeocoderRequest('Paris'))
         );
     }
 

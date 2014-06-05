@@ -11,7 +11,6 @@
 
 namespace Ivory\GoogleMap\Services\Directions;
 
-use \DateTime;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Exception\DirectionsException;
 use Ivory\GoogleMap\Services\Base\TravelMode;
@@ -69,9 +68,14 @@ class DirectionsRequest
 
     /**
      * Creates a directions request.
+     *
+     * @param string|\Ivory\GoogleMap\Base\Coordinate $origin      The origin.
+     * @param string|\Ivory\GoogleMap\Base\Coordinate $destination The destination.
      */
-    public function __construct()
+    public function __construct($origin, $destination)
     {
+        $this->setOrigin($origin);
+        $this->setDestination($destination);
         $this->waypoints = array();
         $this->sensor = false;
     }
@@ -155,7 +159,7 @@ class DirectionsRequest
      */
     public function hasDestination()
     {
-        return $this->destination !== null;
+        return !empty($this->destination);
     }
 
     /**
@@ -171,32 +175,14 @@ class DirectionsRequest
     /**
      * Sets the directions request destination.
      *
-     * Available prototypes:
-     * - function setDestination(string $destination)
-     * - function setDestination(Ivory\GoogleMap\Base\Coordinate $destination)
-     * - function setDestination(double $latitude, double $longitude, boolean $noWrap)
+     * @param string|\Ivory\GoogleMap\Base\Coordinate $destination The destination.
      *
      * @throws \Ivory\GoogleMap\Exception\DirectionsException If the destination is not valid (prototypes).
      */
-    public function setDestination()
+    public function setDestination($destination)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && is_string($args[0])) {
-            $this->destination = $args[0];
-        } elseif (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->destination = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            if ($this->destination === null) {
-                $this->destination = new Coordinate();
-            }
-
-            $this->destination->setLatitude($args[0]);
-            $this->destination->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $this->destination->setNoWrap($args[2]);
-            }
+        if (isset($destination) && (is_string($destination) || $destination instanceof Coordinate)) {
+            $this->destination = $destination;
         } else {
             throw DirectionsException::invalidDirectionsRequestDestination();
         }
@@ -245,7 +231,7 @@ class DirectionsRequest
      */
     public function hasOrigin()
     {
-        return $this->origin !== null;
+        return !empty($this->origin);
     }
 
     /**
@@ -261,32 +247,14 @@ class DirectionsRequest
     /**
      * Sets the directions request origin.
      *
-     * Available prototypes:
-     * - function setOrigin(string $destination)
-     * - function setOrigin(Ivory\GoogleMap\Base\Coordinate $destination)
-     * - function setOrigin(double $latitude, double $longitude, boolean $noWrap)
+     * @param string|\Ivory\GoogleMap\Base\Coordinate $origin The origin.
      *
      * @throws \Ivory\GoogleMap\Exception\DirectionsException If the origin is not valid (prototypes).
      */
-    public function setOrigin()
+    public function setOrigin($origin)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && is_string($args[0])) {
-            $this->origin = $args[0];
-        } elseif (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->origin = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            if ($this->origin === null) {
-                $this->origin = new Coordinate();
-            }
-
-            $this->origin->setLatitude($args[0]);
-            $this->origin->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $this->origin->setNoWrap($args[2]);
-            }
+        if (isset($origin) && (is_string($origin) || $origin instanceof Coordinate)) {
+            $this->origin = $origin;
         } else {
             throw DirectionsException::invalidDirectionsRequestOrigin();
         }
@@ -317,7 +285,7 @@ class DirectionsRequest
      *
      * @param \DateTime $departureTime The directions departure time.
      */
-    public function setDepartureTime(DateTime $departureTime = null)
+    public function setDepartureTime(\DateTime $departureTime = null)
     {
         $this->departureTime = $departureTime;
     }
@@ -347,7 +315,7 @@ class DirectionsRequest
      *
      * @param \DateTime $arrivalTime The directions arrival time.
      */
-    public function  setArrivalTime(DateTime $arrivalTime = null)
+    public function  setArrivalTime(\DateTime $arrivalTime = null)
     {
         $this->arrivalTime = $arrivalTime;
     }
@@ -569,37 +537,11 @@ class DirectionsRequest
     /**
      * Adds a waypoint to the directions request.
      *
-     * Available prototypes:
-     * - function addWaypoint(Ivory\GoogleMap\Services\Directions\DirectionsWaypoint $waypoint)
-     * - function addWaypoint(string $location)
-     * - function addWaypoint(double $latitude, double $longitude, boolean $noWrap)
-     * - function addWaypoint(Ivory\GoogleMap\Base\Coordinate $location)
-     *
-     * @throws \Ivory\GoogleMap\Exception\DirectionsException If the waypoint is not valid (prototypes).
+     * @param \Ivory\GoogleMap\Services\Directions\DirectionsWaypoint $waypoint The waypoint.
      */
-    public function addWaypoint()
+    public function addWaypoint(DirectionsWaypoint $waypoint)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && ($args[0] instanceof DirectionsWaypoint)) {
-            $this->waypoints[] = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            $waypoint = new DirectionsWaypoint();
-            $waypoint->setLocation($args[0], $args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $waypoint->getLocation()->setNoWrap($args[2]);
-            }
-
-            $this->waypoints[] = $waypoint;
-        } elseif (isset($args[0]) && (is_string($args[0]) || ($args[0] instanceof Coordinate))) {
-            $waypoint = new DirectionsWaypoint();
-            $waypoint->setLocation($args[0]);
-
-            $this->waypoints[] = $waypoint;
-        } else {
-            throw DirectionsException::invalidDirectionsRequestWaypoint();
-        }
+        $this->waypoints[] = $waypoint;
     }
 
     /**

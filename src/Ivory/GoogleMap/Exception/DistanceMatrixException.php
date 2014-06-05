@@ -35,22 +35,6 @@ class DistanceMatrixException extends ServiceException
     }
 
     /**
-     * Gets the "INVALID DISTANCE MATRIX REQUEST PARAMETERS" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\DistanceMatrixException The "INVALID DISTANCE MATRIX REQUEST PARAMETERS" exception.
-     */
-    public static function invalidDistanceMatrixRequestParameters()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The process arguments are invalid.',
-            'The available prototypes are:',
-            '- function process(array $origins, array $destinations)',
-            '- function process(Ivory\GoogleMap\Services\DistanceMatrix\DistanceMatrixRequest $request)'
-        ));
-    }
-
-    /**
      * Gets the "INVALID DISTANCE MATRIX REQUEST DESTINATION" exception.
      *
      * @return \Ivory\GoogleMap\Exception\DistanceMatrixException The "INVALID DISTANCE MATRIX REQUEST DESTINATION" exception.

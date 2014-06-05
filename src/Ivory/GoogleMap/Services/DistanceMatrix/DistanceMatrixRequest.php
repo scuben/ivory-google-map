@@ -54,11 +54,14 @@ class DistanceMatrixRequest
 
     /**
      * Creates a distance matrix request.
+     *
+     * @param array $origins      The origins.
+     * @param array $destinations The destinations.
      */
-    public function __construct()
+    public function __construct(array $origins, array $destinations)
     {
-        $this->origins = array();
-        $this->destinations = array();
+        $this->setOrigins($origins);
+        $this->setDestinations($destinations);
         $this->sensor = false;
     }
 
@@ -171,30 +174,13 @@ class DistanceMatrixRequest
     /**
      * Adds a destination to the request.
      *
-     * Available prototypes:
-     * - function addDestination(string $destination)
-     * - function addDestination(Ivory\GoogleMap\Base\Coordinate $destination)
-     * - function addDestination(double $latitude, double $longitude, boolean $noWrap)
+     * @param string|\Ivory\GoogleMap\Base\Coordinate $destination The coordinate.
      *
-     * @throws \Ivory\GoogleMap\Exception\DistanceMatrixException If the destination is not valid (prototypes).
+     * @throws \Ivory\GoogleMap\Exception\DistanceMatrixException If the destination is invalid.
      */
-    public function addDestination()
+    public function addDestination($destination)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && is_string($args[0])) {
-            $this->destinations[] = $args[0];
-        } elseif (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->destinations[] = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            $destination = new Coordinate();
-            $destination->setLatitude($args[0]);
-            $destination->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $destination->setNoWrap($args[2]);
-            }
-
+        if (isset($destination) && (is_string($destination) || $destination instanceof Coordinate)) {
             $this->destinations[] = $destination;
         } else {
             throw DistanceMatrixException::invalidDistanceMatrixRequestDestination();
@@ -238,30 +224,13 @@ class DistanceMatrixRequest
     /**
      * Adds an origin to the request.
      *
-     * Available prototypes:
-     * - function addOrigin(string $destination)
-     * - function addOrigin(Ivory\GoogleMap\Base\Coordinate $destination)
-     * - function addOrigin(double $latitude, double $longitude, boolean $noWrap)
+     * @param string|\Ivory\GoogleMap\Base\Coordinate $origin The origin.
      *
-     * @throws \Ivory\GoogleMap\Exception\DistanceMatrixException If the origin is not valid (prototypes).
+     * @throws \Ivory\GoogleMap\Exception\DistanceMatrixException If the origin is invalid.
      */
-    public function addOrigin()
+    public function addOrigin($origin)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && is_string($args[0])) {
-            $this->origins[] = $args[0];
-        } elseif (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->origins[] = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            $origin = new Coordinate();
-            $origin->setLatitude($args[0]);
-            $origin->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $origin->setNoWrap($args[2]);
-            }
-
+        if (isset($origin) && (is_string($origin) || $origin instanceof Coordinate)) {
             $this->origins[] = $origin;
         } else {
             throw DistanceMatrixException::invalidDistanceMatrixRequestOrigin();

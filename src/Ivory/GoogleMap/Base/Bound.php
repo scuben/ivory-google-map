@@ -12,7 +12,6 @@
 namespace Ivory\GoogleMap\Base;
 
 use Ivory\GoogleMap\Assets\AbstractJavascriptVariableAsset;
-use Ivory\GoogleMap\Exception\BaseException;
 use Ivory\GoogleMap\Overlays\ExtendableInterface;
 
 /**

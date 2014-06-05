@@ -29,13 +29,25 @@ class DirectionsWaypoint
     protected $stopover;
 
     /**
+     * Creates a direction waypoint
+     *
+     * @param string|\Ivory\GoogleMap\Base\Coordinate $location The coordinate.
+     * @param boolean                                 $stopover TRUE if stopover the waypoint, else FALSE.
+     */
+    public function __construct($location, $stopover = false)
+    {
+        $this->setLocation($location);
+        $this->setStopover($stopover);
+    }
+
+    /**
      * Checks if the directions waypoint has a location.
      *
      * @return boolean TRUE if the directions waypoint has a location else FALSE.
      */
     public function hasLocation()
     {
-        return $this->location !== null;
+        return !empty($this->location);
     }
 
     /**
@@ -51,32 +63,14 @@ class DirectionsWaypoint
     /**
      * Sets the directions waypoint location.
      *
-     * Available prototypes:
-     * - function setLocation(string $destination)
-     * - function setLocation(Ivory\GoogleMap\Base\Coordinate $destination)
-     * - function setLocation(double $latitude, double $longitude, boolean $noWrap)
+     * @param string|\Ivory\GoogleMap\Base\Coordinate $location The location.
      *
-     * @throws \Ivory\GoogleMap\Exception\DirectionsException If the location is not valid (prototypes).
+     * @throws \Ivory\GoogleMap\Exception\DirectionsException If the argument is invalid.
      */
-    public function setLocation()
+    public function setLocation($location)
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && is_string($args[0])) {
-            $this->location = $args[0];
-        } elseif (isset($args[0]) && ($args[0] instanceof Coordinate)) {
-            $this->location = $args[0];
-        } elseif ((isset($args[0]) && is_numeric($args[0])) && (isset($args[1]) && is_numeric($args[1]))) {
-            if ($this->location === null) {
-                $this->location = new Coordinate();
-            }
-
-            $this->location->setLatitude($args[0]);
-            $this->location->setLongitude($args[1]);
-
-            if (isset($args[2]) && is_bool($args[2])) {
-                $this->location->setNoWrap($args[2]);
-            }
+        if (isset($location) && (is_string($location) || $location instanceof Coordinate)) {
+            $this->location = $location;
         } else {
             throw DirectionsException::invalidDirectionsWaypointLocation();
         }
@@ -89,7 +83,7 @@ class DirectionsWaypoint
      */
     public function hasStopover()
     {
-        return $this->stopover !== null;
+        return $this->stopover === true;
     }
 
     /**

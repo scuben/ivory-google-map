@@ -137,49 +137,6 @@ class GeocodingException extends ServiceException
     }
 
     /**
-     * Gets the "INVALID GEOCODER REQUEST BOUND" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\GeocodingException The "INVALID GEOCODER REQUEST BOUND" exception.
-     */
-    public static function invalidGeocoderRequestBound()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The bound setter arguments are invalid.',
-            'The available prototypes are :',
-            ' - function setBound(Ivory\GoogleMap\Base\Bound $bound = null)',
-            ' - function setBound('.
-            'Ivory\GoogleMap\Base\Coordinate $southWest, '.
-            'Ivory\GoogleMap\Base\Coordinate $northEast'.
-            ')',
-            ' - function setBound('.
-            'double $southWestLatitude, '.
-            'double $southWestLongitude, '.
-            'double $northEastLatitude, '.
-            'double $northEastLongitude, '.
-            'boolean southWestNoWrap = true, '.
-            'boolean $northEastNoWrap = true'.
-            ')'
-        ));
-    }
-
-    /**
-     * Gets the "INVALID GEOCODER REQUEST COORDINATE" exception.
-     *
-     * @return \Ivory\GoogleMap\Exception\GeocodingException The "INVALID GEOCODER REQUEST COORDINATE" exception.
-     */
-    public static function invalidGeocoderRequestCoordinate()
-    {
-        return new static(sprintf(
-            '%s'.PHP_EOL.'%s'.PHP_EOL.'%s'.PHP_EOL.'%s',
-            'The coordinate setter arguments is invalid.',
-            'The available prototypes are :',
-            ' - function setCoordinate(Ivory\GoogleMap\Base\Coordinate $coordinate = null)',
-            ' - function setCoordinate(double $latitude, double $longitude, boolean $noWrap = true)'
-        ));
-    }
-
-    /**
      * Gets the "INVALID GEOCODER REQUEST REGION" exception.
      *
      * @return \Ivory\GoogleMap\Exception\GeocodingException The "INVALID GEOCODER REQUEST REGION" exception.

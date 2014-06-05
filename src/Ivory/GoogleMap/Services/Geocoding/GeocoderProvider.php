@@ -196,14 +196,9 @@ class GeocoderProvider extends AbstractProvider implements ProviderInterface
      *
      * @throws \Ivory\GoogleMap\Exception\GeocodingException If the request is not valid.
      */
-    public function getGeocodedData($request)
+    public function getGeocodedData($geocoderRequest)
     {
-        if (is_string($request)) {
-            $geocoderRequest = new GeocoderRequest();
-            $geocoderRequest->setAddress($request);
-        } elseif ($request instanceof GeocoderRequest) {
-            $geocoderRequest = $request;
-        } else {
+        if (!$geocoderRequest instanceof AbstractGeocoderRequest) {
             throw GeocodingException::invalidGeocoderProviderRequestArguments();
         }
 
@@ -228,8 +223,7 @@ class GeocoderProvider extends AbstractProvider implements ProviderInterface
      */
     public function getReversedData(array $coordinates)
     {
-        $request = new GeocoderRequest();
-        $request->setCoordinate($coordinates[0], $coordinates[1]);
+        $request = new CoordinateGeocoderRequest(new Coordinate($coordinates[0], $coordinates[1]));
 
         return $this->getGeocodedData($request);
     }
@@ -245,15 +239,15 @@ class GeocoderProvider extends AbstractProvider implements ProviderInterface
     /**
      * Generates geocoding URL according to the request.
      *
-     * @param \Ivory\GoogleMap\Services\Geocoding\GeocoderRequest $geocoderRequest The geocoder request.
+     * @param \Ivory\GoogleMap\Services\Geocoding\AbstractGeocoderRequest $geocoderRequest The geocoder request.
      *
      * @return string The generated URL.
      */
-    protected function generateUrl(GeocoderRequest $geocoderRequest)
+    protected function generateUrl(AbstractGeocoderRequest $geocoderRequest)
     {
         $httpQuery = array();
 
-        if ($geocoderRequest->hasAddress()) {
+        if ($geocoderRequest instanceof AddressGeocoderRequest) {
             $httpQuery['address'] = $geocoderRequest->getAddress();
         } else {
             $httpQuery['latlng'] = sprintf(

@@ -28,7 +28,7 @@ class DirectionsWaypointTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->directionsWaypoint = new DirectionsWaypoint();
+        $this->directionsWaypoint = new DirectionsWaypoint('');
     }
 
     /**
@@ -61,15 +61,6 @@ class DirectionsWaypointTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($location, $this->directionsWaypoint->getLocation());
     }
 
-    public function testLocationWithLatitudeAndLongitude()
-    {
-        $this->directionsWaypoint->setLocation(1.1, 2.1, false);
-
-        $this->assertSame(1.1, $this->directionsWaypoint->getLocation()->getLatitude());
-        $this->assertSame(2.1, $this->directionsWaypoint->getLocation()->getLongitude());
-        $this->assertFalse($this->directionsWaypoint->getLocation()->isNoWrap());
-    }
-
     /**
      * @expectedException \Ivory\GoogleMap\Exception\DirectionsException
      * @expectedExceptionMessage The location setter arguments are invalid.
@@ -83,7 +74,7 @@ class DirectionsWaypointTest extends \PHPUnit_Framework_TestCase
         $this->directionsWaypoint->setLocation(true);
     }
 
-    public function testStopoverWithValieValue()
+    public function testStopoverWithValidValue()
     {
         $this->directionsWaypoint->setStopover(true);
 
