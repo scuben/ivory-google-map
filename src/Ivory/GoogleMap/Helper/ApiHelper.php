@@ -52,18 +52,18 @@ class ApiHelper extends AbstractHelper
      *
      * @param string  $language  The language.
      * @param array   $libraries Additionnal libraries.
-     * @param string  $key       The key.
      * @param string  $callback  A JS callback.
      * @param boolean $sensor    The sensor flag.
+     * @param string  $key       The key.
      *
      * @return string The HTML output.
      */
     public function render(
         $language = 'en',
         array $libraries = array(),
-        $key = null,
         $callback = null,
-        $sensor = false
+        $sensor = false,
+        $key = null
     )
     {
         $otherParameters = array();

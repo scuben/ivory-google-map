@@ -160,6 +160,7 @@ class Map extends AbstractJavascriptVariableAsset
         $this->kmlLayers = array();
 
         $this->libraries = array();
+        $this->key = null;
         $this->language = 'en';
     }
 
