@@ -118,6 +118,9 @@ class Map extends AbstractJavascriptVariableAsset
     protected $libraries;
 
     /** @var string */
+    protected $key;
+
+    /** @var string */
     protected $language;
 
     /**
@@ -1186,6 +1189,26 @@ class Map extends AbstractJavascriptVariableAsset
     public function setLibraries(array $libraries)
     {
         $this->libraries = $libraries;
+    }
+
+    /**
+     * Gets the map key.
+     *
+     * @return string The map key.
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * Sets the map key.
+     *
+     * @param string $key The map key.
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
     }
 
     /**

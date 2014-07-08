@@ -52,6 +52,7 @@ class ApiHelper extends AbstractHelper
      *
      * @param string  $language  The language.
      * @param array   $libraries Additionnal libraries.
+     * @param string  $key       The key.
      * @param string  $callback  A JS callback.
      * @param boolean $sensor    The sensor flag.
      *
@@ -60,6 +61,7 @@ class ApiHelper extends AbstractHelper
     public function render(
         $language = 'en',
         array $libraries = array(),
+        $key = null,
         $callback = null,
         $sensor = false
     )
@@ -68,6 +70,10 @@ class ApiHelper extends AbstractHelper
 
         if (!empty($libraries)) {
             $otherParameters['libraries'] = implode(',', $libraries);
+        }
+
+        if (null !== $key) {
+            $otherParameters['key'] = $key;
         }
 
         $otherParameters['language'] = $language;
